@@ -339,6 +339,9 @@ html,body{overflow-x:clip}
 .vth{width:76px;height:76px;border-radius:12px;object-fit:cover;background:var(--line);border:1.5px solid var(--line)}
 .vd{display:inline-block;margin-top:3px;background:var(--ink);color:var(--white);font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;text-transform:capitalize}
 .vq{display:grid;justify-items:end;gap:2px}.vq b{font-family:var(--f-display);font-size:20px}.vq span{font-size:13px;color:var(--muted)}
+.rush{display:flex;align-items:center;gap:12px;background:var(--white);border:1.5px solid var(--line);border-left:6px solid var(--c-tip);border-radius:16px;padding:12px 16px;margin:4px 0 18px}
+.rush p{margin:0;font-size:14.5px;line-height:1.4}.rush b{font-weight:800}
+.rush-ic{flex:none;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--ink);color:var(--c-tip);font-size:17px}
 </style>
 
 <section class="hero">
@@ -363,6 +366,7 @@ html,body{overflow-x:clip}
 </div>
 
 <main><div class="wrap">
+  <aside class="rush" aria-label="Pedidos de último minuto"><span class="rush-ic" aria-hidden="true">✈</span><p><b data-i18n="rushH">¿Te vas pronto de Medellín?</b> <span data-i18n="rushP">Pide hoy y te lo llevamos a tu hotel o Airbnb, o recógelo en nuestra tienda.</span></p></aside>
   <p class="count" id="count"></p>
   <div id="list"><p class="loading" data-i18n="loading">Cargando productos disponibles…</p></div>
 </div></main>
@@ -453,6 +457,7 @@ const T={es:{
  visitH:'Visítanos',how:'Cómo llegar →',payH:'Formas de pago',pay1:'Tarjeta débito y crédito en tienda',pay2:'Efectivo en tienda',pay3:'Transferencia, código QR y link de pago',
  shipH:'Entregas',ship1:'Recoge en cualquiera de nuestras tiendas',ship2:'Domicilios en Medellín',ship3:'Envíos nacionales e internacionales',ship4:'El costo del envío te lo confirmamos por WhatsApp.',
  msg:(name,lines,total,promo)=>`¡Hola Te Amo Medellín! ${name?"Soy "+name+". ":""}Quiero hacer este pedido:\n\n${lines}\n\nTotal aproximado: ${total}${promo?" (antes de promos)":""}\n\n¿Me confirman disponibilidad y entrega? Gracias 💛`,
+ rushH:'¿Te vas pronto de Medellín?',rushP:'Pide hoy y te lo llevamos a tu hotel o Airbnb, o recógelo en nuestra tienda.',refL:'Vengo de',
  msgShort:(name,code,n,total,promo)=>`¡Hola Te Amo Medellín! ${name?"Soy "+name+". ":""}Quiero hacer este pedido 💛\n\nVer mi pedido: ${code}\n\n(${n} ${n===1?"producto":"productos"} · total aproximado ${total}${promo?", antes de promos":""})\n\n¿Me confirman disponibilidad y entrega? Gracias`,
  pedLink:'Ver mi pedido con fotos:',pedCode:'Código del pedido',staffBtn:'Equipo Te Amo: ver un pedido con fotos',vTitle:'Pedido del cliente',vLabel:'Pega aquí el mensaje de WhatsApp o el código del pedido',vGo:'Ver pedido',vPaste:'Pegar y ver pedido',vBad:'No encontramos un código de pedido. Copia el mensaje completo del cliente.',vMiss:'Producto que ya no está en el catálogo',
  bizMsg:'¡Hola Te Amo Medellín! Quiero cotizar kits empresariales / compra al por mayor. ',
@@ -476,6 +481,7 @@ en:{
  visitH:'Visit us',how:'Directions →',payH:'Payment methods',pay1:'Debit and credit cards in store',pay2:'Cash in store',pay3:'Bank transfer, QR code and payment link',
  shipH:'Delivery',ship1:'Pick up at either of our stores',ship2:'Home delivery in Medellín',ship3:'National and international shipping',ship4:'We confirm the shipping cost on WhatsApp.',
  msg:(name,lines,total,promo)=>`Hi Te Amo Medellín! ${name?"I'm "+name+". ":""}I would like to order:\n\n${lines}\n\nApproximate total: ${total} COP${promo?" (before deals)":""}\n\nCould you confirm availability and delivery? Thank you 💛`,
+ rushH:'Leaving Medellín soon?',rushP:'Order today and we’ll bring it to your hotel or Airbnb, or pick it up at our store.',refL:'Referred by',
  msgShort:(name,code,n,total,promo)=>`Hi Te Amo Medellín! ${name?"I'm "+name+". ":""}I would like to place this order 💛\n\nSee my order: ${code}\n\n(${n} ${n===1?"item":"items"} · approximate total ${total} COP${promo?", before deals":""})\n\nCould you confirm availability and delivery? Thank you`,
  pedLink:'See my order with photos:',pedCode:'Order code',staffBtn:'Te Amo team: view an order with photos',vTitle:'Customer order',vLabel:'Paste the WhatsApp message or the order code here',vGo:'View order',vPaste:'Paste & view order',vBad:'No order code found. Copy the full customer message.',vMiss:'Product no longer in the catalog',
  bizMsg:'Hi Te Amo Medellín! I would like a quote for corporate kits / wholesale. ',
@@ -638,8 +644,12 @@ function orderText(){
   const lines=[...cart].map(([id,q])=>{const o=OPT[pid(id)].o;total+=o.price*q;return `• ${q} × ${lineName(id,true)} — ${fmt(o.price*q)}`});
   const code=cartCode();
   let n=0;cart.forEach(q=>n+=q);
-  return t("msgShort")(name,`${SHARE_URL}#pedido=${code}`,n,fmt(total),[...cart.keys()].some(id=>OPT[pid(id)].p.promo));
+  const ref=getRef();
+  return t("msgShort")(name,`${SHARE_URL}#pedido=${code}`,n,fmt(total),[...cart.keys()].some(id=>OPT[pid(id)].p.promo))+(ref?`\n\n📍 ${t("refL")}: ${ref}`:"");
 }
+function refName(r){return String(r).replace(/[^\p{L}\p{N}\- _]/gu,"").slice(0,40).replace(/[-_]+/g," ").trim().replace(/\b\p{L}/gu,c=>c.toUpperCase())}
+(function(){try{const u=new URLSearchParams(location.search).get("ref")||(location.hash.match(/ref=([^&]+)/)||[])[1];if(u){const n=refName(decodeURIComponent(u));if(n)localStorage.setItem("tam_ref",JSON.stringify({n,t:Date.now()}))}}catch(_){}})();
+function getRef(){try{const x=JSON.parse(localStorage.getItem("tam_ref")||"null");if(x&&Date.now()-x.t<30*864e5)return x.n}catch(_){}return ""}
 const SHARE_URL="https://teamomedellin.github.io/";
 function cartCode(){return "TAM-"+[...cart].map(([k,q])=>{const d=pdx(k);return pid(k)+(d!=null?"."+(d+1):"")+"x"+q}).join(",")}
 function parseCode(txt){const m=String(txt||"").replace(/\s+/g,"").replace(/[×*]/g,"x").match(/TAM-?([0-9.x,]+)/i);if(!m)return null;
