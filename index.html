@@ -361,6 +361,15 @@ html,body{overflow-x:clip}
 .hot{align-self:flex-start;background:#FFE8E6;color:var(--red);font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;margin-bottom:-4px}
 .pwrap{display:flex;flex-direction:column;gap:1px;min-width:0}
 .save{font-size:11.5px;font-weight:700;color:var(--green);line-height:1.25}
+.shop{padding-block:clamp(24px,5vw,44px) 8px}
+.shop h2{font-family:var(--f-display);font-stretch:125%;font-weight:900;font-size:clamp(28px,5vw,46px);line-height:.95;text-transform:uppercase;margin:0 0 8px;letter-spacing:-.01em}
+.shop h2 em{font-style:normal;color:var(--red)}
+.shop>p{margin:0 0 16px;color:var(--muted)}
+.shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.shop-grid figure{margin:0;border-radius:18px;overflow:hidden;border:2px solid var(--ink);box-shadow:4px 4px 0 var(--ink);aspect-ratio:3/4}
+.shop-grid figure.big{aspect-ratio:3/4}
+.shop-grid img{width:100%;height:100%;object-fit:cover;display:block}
+@media (max-width:620px){.shop-grid{grid-template-columns:1fr 1fr}.shop-grid figure.big{grid-column:span 2;grid-row:auto;aspect-ratio:4/3}.shop-grid figure:last-child{display:none}}
 </style>
 
 <section class="hero">
@@ -396,6 +405,17 @@ html,body{overflow-x:clip}
     <span class="d-cta"><span id="diccCta" data-i18n="diccOpen">Entrar</span><i aria-hidden="true">↓</i></span>
   </button>
   <div id="diccBody" hidden><p class="d-intro" data-i18n="diccP">Toca cada palabra y aprende a hablar como un paisa.</p><div class="words" id="words"></div><div class="quiz" id="quiz" aria-live="polite"></div></div>
+</section>
+
+<section class="shop wrap" aria-labelledby="shopH">
+  <h2 id="shopH" data-i18n-html="shopH">Ven a <em>conocernos</em></h2>
+  <p data-i18n="shopP">Dos tiendas en El Poblado llenas de Medellín: souvenirs, artesanías, café y dulces típicos.</p>
+  <div class="shop-grid">
+    <figure class="big"><img src="tienda/fachada.jpg" alt="Fachada de la tienda Te Amo Medellín Souvenirs" loading="lazy"></figure>
+    <figure><img src="tienda/interior.jpg" alt="Sombreros, mochilas y camisetas en la tienda" loading="lazy"></figure>
+    <figure><img src="tienda/estanteria.jpg" alt="Estantería con platos, copas y pocillos de Medellín" loading="lazy"></figure>
+    <figure><img src="tienda/artesania.jpg" alt="Botella y copa tejidas a mano" loading="lazy"></figure>
+  </div>
 </section>
 
 <section class="info"><div class="wrap">
@@ -472,6 +492,7 @@ const T={es:{
  yourname:'Tu nombre',optional:'Opcional',send:'Enviar pedido por WhatsApp',copy:'Copiar pedido',copied:'Pedido copiado. Pégalo en el chat de WhatsApp.',copyErr:'No se pudo copiar automáticamente. Usa el botón verde.',
  each:'c/u',follow:'Síguenos y <em>enamórate</em> de Medellín',
  foot:'Te Amo Medellín · Souvenirs. Los precios incluyen impuestos. Las cantidades se actualizan cada día desde nuestro inventario, así que te confirmamos todo al recibir tu pedido.',
+ shopH:'Ven a <em>conocernos</em>',shopP:'Dos tiendas en El Poblado llenas de Medellín: souvenirs, artesanías, café y dulces típicos.',
  bizEy:'Empresas y al por mayor',bizH:'Kits empresariales y regalos corporativos',bizP:'Armamos kits con productos típicos de Medellín para clientes, colaboradores y eventos, y vendemos al por mayor productos seleccionados.',bizBtn:'Cotizar por WhatsApp',
  visitH:'Visítanos',how:'Cómo llegar →',payH:'Formas de pago',pay1:'Tarjeta débito y crédito en tienda',pay2:'Efectivo en tienda',pay3:'Transferencia, código QR y link de pago',
  shipH:'Entregas',ship1:'Recoge en cualquiera de nuestras tiendas',ship2:'Domicilios en Medellín',ship3:'Envíos nacionales e internacionales',ship4:'El costo del envío te lo confirmamos por WhatsApp.',
@@ -496,6 +517,7 @@ en:{
  yourname:'Your name',optional:'Optional',send:'Send order on WhatsApp',copy:'Copy order',copied:'Order copied. Paste it in the WhatsApp chat.',copyErr:'Could not copy automatically. Use the green button.',
  each:'each',follow:'Follow us and <em>fall in love</em> with Medellín',
  foot:'Te Amo Medellín · Souvenirs. Prices in Colombian pesos (COP), taxes included. Stock is updated daily from our inventory, and we confirm everything when we receive your order.',
+ shopH:'Come <em>visit us</em>',shopP:'Two stores in El Poblado full of Medellín: souvenirs, crafts, coffee and local sweets.',
  bizEy:'Companies & wholesale',bizH:'Corporate kits and business gifts',bizP:'We build kits with typical Medellín products for clients, teams and events, and sell selected products wholesale.',bizBtn:'Get a quote on WhatsApp',
  visitH:'Visit us',how:'Directions →',payH:'Payment methods',pay1:'Debit and credit cards in store',pay2:'Cash in store',pay3:'Bank transfer, QR code and payment link',
  shipH:'Delivery',ship1:'Pick up at either of our stores',ship2:'Home delivery in Medellín',ship3:'National and international shipping',ship4:'We confirm the shipping cost on WhatsApp.',
