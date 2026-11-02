@@ -613,7 +613,7 @@ function renderList(){
   const list=document.getElementById("list");
   if(!items.length){list.innerHTML=`<p class="empty">${t("empty")}</p>`;return}
   const groups=DATA.categories.map(c=>({cat:c,title:cn(c),items:items.filter(p=>p.cat===c.name).sort((a,b)=>a.rank-b.rank)})).filter(g=>g.items.length);
-  let top=[]; if(cat==="Todo"&&!q&&DATA.top){top=DATA.top.map(k=>DATA.products.find(p=>p.key===k)).filter(p=>p&&avail(p).length)}
+  let top=[]; if(false&&cat==="Todo"&&!q&&DATA.top){top=DATA.top.map(k=>DATA.products.find(p=>p.key===k)).filter(p=>p&&avail(p).length)}
   list.innerHTML=(top.length?showcaseHTML(top):"")+groups.map(g=>catHeadHTML(g)+`<div class="grid">${g.items.map(cardHTML).join("")}</div>`).join("");
   const rail=document.getElementById("rail"); if(rail) list.querySelectorAll("[data-rail]").forEach(b=>b.onclick=()=>rail.scrollBy({left:Number(b.dataset.rail)*rail.clientWidth*.8,behavior:"smooth"}));
   reveal(list);
