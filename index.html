@@ -358,6 +358,9 @@ html,body{overflow-x:clip}
 .dnum{position:static;display:block;background:none;color:var(--muted);font-size:11.5px;font-weight:600;padding:0;margin:2px 0 0;text-transform:none}
 .dnum b{color:var(--ink)}
 .dnum::first-letter{text-transform:uppercase}
+.hot{align-self:flex-start;background:#FFE8E6;color:var(--red);font-size:11px;font-weight:800;border-radius:999px;padding:2px 9px;margin-bottom:-4px}
+.pwrap{display:flex;flex-direction:column;gap:1px;min-width:0}
+.save{font-size:11.5px;font-weight:700;color:var(--green);line-height:1.25}
 </style>
 
 <section class="hero">
@@ -461,7 +464,7 @@ const T={es:{
  catSay:{"Souvenirs":"Pa' que se acuerden de Medallo","Pocillos y copas":"¿Un tintico o un guaro, pues?","Ropa y gorras":"¡Qué chimba de pinta, parce!","Accesorios":"Detallitos hechos con amor paisa","Café":"Sin tintico no arranca el día","Dulces de café":"Café pa' comérselo, ¡eavemaría!","Dulces típicos":"Como los de la abuela, mijo","Chocolates":"Un gustico de chocolate, pa' consentirse","Miniaturas":"La chiva más chiquita de Antioquia"},
  h1:'Un pedacito de <em>Medellín</em> para llevar.',lead:'Elige, pide por WhatsApp y te lo llevamos a tu hotel.',
  search:'Buscar: café, pocillo, camiseta…',loading:'Cargando productos disponibles…',all:'Todo',top:'Los más vendidos',
- count1:'1 producto disponible',countN:n=>n+' productos disponibles',add:'+ Agregar',last:'Últimas unidades',soon:'Foto pronto',promo:'Promo',design:'diseño',swipe:'desliza',sample:'Muestra',more:'Más diseños por WhatsApp →',moreMsg:n=>`¡Hola Te Amo Medellín! Quiero ver más diseños y colores de: ${n}. ¿Me envían fotos? 💛`,
+ count1:'1 producto disponible',countN:n=>n+' productos disponibles',add:'+ Agregar',last:'Últimas unidades',soon:'Foto pronto',promo:'Promo',design:'diseño',swipe:'desliza',hot:'🔥 Más vendido',save:(n,tot,dif)=>`Lleva ${n} por ${tot} · ahorras ${dif}`,sample:'Muestra',more:'Más diseños por WhatsApp →',moreMsg:n=>`¡Hola Te Amo Medellín! Quiero ver más diseños y colores de: ${n}. ¿Me envían fotos? 💛`,
  empty:'No encontramos productos con esa búsqueda. Prueba con otra palabra o escríbenos por WhatsApp.',
  loadErr:'No pudimos cargar los productos. Recarga la página o escríbenos por WhatsApp al 313 474 0880.',
  stamp:d=>'Disponible hoy · actualizado '+d,items1:'1 producto',itemsN:n=>n+' productos',view:'Ver pedido →',yourorder:'Tu pedido',total:'Total aproximado',
@@ -485,7 +488,7 @@ en:{
  catSay:{"Souvenirs":"So you never forget Medallo","Pocillos y copas":"A tintico (coffee) or a guaro (aguardiente)?","Ropa y gorras":"¡Qué chimba! Looking good, parce","Accesorios":"Little treasures made with paisa love","Café":"No tintico, no day: Colombian coffee","Dulces de café":"Coffee you can eat. ¡Eavemaría!","Dulces típicos":"Just like grandma used to make","Chocolates":"A little chocolate treat, paisa style","Miniaturas":"Antioquia’s tiniest chiva bus"},
  h1:'A little piece of <em>Medellín</em> to take home.',lead:'Pick, order on WhatsApp and we deliver to your hotel.',
  search:'Search: coffee, mug, T-shirt…',loading:'Loading available products…',all:'All',top:'Best sellers',
- count1:'1 product available',countN:n=>n+' products available',add:'+ Add',last:'Last units',soon:'Photo soon',promo:'Deal',design:'design',swipe:'swipe',sample:'Sample',more:'More designs on WhatsApp →',moreMsg:n=>`Hi Te Amo Medellín! I'd like to see more designs and colors of: ${n}. Could you send me photos? 💛`,
+ count1:'1 product available',countN:n=>n+' products available',add:'+ Add',last:'Last units',soon:'Photo soon',promo:'Deal',design:'design',swipe:'swipe',hot:'🔥 Best seller',save:(n,tot,dif)=>`${n} for ${tot} · save ${dif}`,sample:'Sample',more:'More designs on WhatsApp →',moreMsg:n=>`Hi Te Amo Medellín! I'd like to see more designs and colors of: ${n}. Could you send me photos? 💛`,
  empty:'No products match your search. Try another word or message us on WhatsApp.',
  loadErr:'We could not load the products. Reload the page or message us on WhatsApp at +57 313 474 0880.',
  stamp:d=>'Available today · updated '+d,items1:'1 item',itemsN:n=>n+' items',view:'View order →',yourorder:'Your order',total:'Approximate total',
@@ -546,7 +549,10 @@ function bodyHTML(p,d){
   const o=selected(p), a=avail(p); if(d===undefined)d=isDes(p)?0:null;
   const opts=(p.options.length>1||p.options[0].label)?`<div class="opts" role="group">${a.map(x=>`<button type="button" class="opt" data-opt="${x.id}" data-p="${p.key}" aria-pressed="${x.id===o.id}">${esc(ol(x))}</button>`).join("")}</div>`:"";
   const dn=d!=null?`<span class="dnum">${t("design")} <b>${d+1}</b>/${p.photos.length} · ${t("swipe")}</span>`:"";
-  return `<div class="body"><h3 class="name">${esc(pn(p))}</h3>${dn}${moreHTML(p)}${opts}<div class="row"><span class="price">${fmt(o.price)}</span><span>${controlHTML(K(o.id,d))}</span></div></div>`;
+  const hot=(DATA.top||[]).includes(p.key)?`<span class="hot">${t("hot")}</span>`:"";
+  let save="";const pm=String(p.promo||"").match(/(\d+)\s*x\s*\$?\s*([\d.]+)/i);
+  if(pm){const n=+pm[1],tot=+pm[2].replace(/\./g,""),dif=n*o.price-tot;if(dif>0)save=`<span class="save">${t("save")(n,fmt(tot),fmt(dif))}</span>`}
+  return `<div class="body">${hot}<h3 class="name">${esc(pn(p))}</h3>${dn}${moreHTML(p)}${opts}<div class="row"><span class="pwrap"><span class="price">${fmt(o.price)}</span>${save}</span><span>${controlHTML(K(o.id,d))}</span></div></div>`;
 }
 function cardHTML(p){
   const c=catOf(p.cat), o=selected(p);
