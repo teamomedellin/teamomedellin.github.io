@@ -425,6 +425,22 @@ html,body{overflow-x:clip}
 .hero-txt{text-align:center;padding-block:14px 22px !important;display:block !important}
 .hero-txt h1{margin-bottom:6px}
 .hero-txt p{margin:0 auto}
+.bar{position:sticky;top:70px;z-index:8}
+.bar .lang{display:none}
+.rush{display:none}
+.hero-txt{display:none !important}
+.hero{background:var(--paper)}
+.promo-dots{position:relative;margin-top:-26px;padding:0 0 10px;z-index:2}
+.promo-dots i{background:rgba(24,24,30,.25)}.promo-dots i.on{background:var(--ink)}
+.pslide{grid-template-columns:1fr 1fr;height:clamp(230px,34vw,400px);min-height:0;padding:0 0 0 max(20px,calc((100% - 1120px)/2));gap:8px}
+.ps-txt{gap:8px;padding:28px 0 40px}
+.ps-ey{background:var(--white);color:var(--red);font-size:10.5px;padding:3px 9px}
+.ps-name{order:-1;display:none}
+.ps-big{font-stretch:110%;font-weight:900;font-size:clamp(30px,6.2vw,64px);line-height:.95;color:var(--ink);-webkit-text-stroke:0;text-shadow:none;letter-spacing:-.01em}
+.ps-name2{font-weight:600;font-size:clamp(14px,1.9vw,19px);line-height:1.25;color:var(--ink);opacity:.85;max-width:22ch}
+.ps-btn{margin-top:10px;background:var(--ink);color:var(--white);border:0;box-shadow:none;padding:11px 20px;font-size:14px}
+.ps-btn:hover{background:var(--red)}
+.pslide img{justify-self:stretch;align-self:stretch;width:100%;height:100%;aspect-ratio:auto;object-fit:cover;border:0;border-radius:0;box-shadow:none;transform:none;min-height:0;-webkit-mask-image:linear-gradient(to right,transparent,#000 22%);mask-image:linear-gradient(to right,transparent,#000 22%)}
 </style>
 
 <div class="announce" aria-live="polite"><span id="annTxt">Domicilios en Medellín · Envíos nacionales e internacionales</span></div>
@@ -448,7 +464,7 @@ html,body{overflow-x:clip}
   </div>
 </section>
 
-<div class="bar">
+<div class="bar" id="searchBar" hidden>
   <div class="wrap">
     <div class="chips" id="chips" role="toolbar" aria-label="Categorías"></div>
     <div class="search"><input id="q" type="search" placeholder="Buscar: café, pocillo, camiseta…" data-i18n-ph="search" aria-label="Buscar productos"></div>
@@ -572,7 +588,7 @@ const T={es:{
  each:'c/u',follow:'Síguenos y <em>enamórate</em> de Medellín',
  foot:'Te Amo Medellín · Souvenirs. Los precios incluyen impuestos. Las cantidades se actualizan cada día desde nuestro inventario, así que te confirmamos todo al recibir tu pedido.',
  mHome:'Inicio',mShop:'Tienda',mBiz:'Regalos corporativos',mStore:'Nuestra tienda',mPaisa:'Diccionario paisa',mVisit:'Visítanos y formas de pago',mContact:'Contáctanos por WhatsApp',mAll:'Ver todo',
- ann:['🚚 Domicilios en Medellín y envíos internacionales','🎁 Kits corporativos: cotiza por WhatsApp','📍 Tiendas en Calle 10 y Manila, El Poblado'],promoEy:'Promo',buy:'¡Compra aquí!',
+ ann:['✈️ ¿Te vas pronto? Te lo llevamos a tu hotel','🚚 Domicilios en Medellín y envíos internacionales','🎁 Kits corporativos: cotiza por WhatsApp','📍 Tiendas en Calle 10 y Manila, El Poblado'],promoEy:'Promo',buy:'¡Compra aquí!',
  shopH:'Ven a <em>conocernos</em>',shopP:'Dos tiendas en El Poblado llenas de Medellín: souvenirs, artesanías, café y dulces típicos.',
  bizEy:'Empresas y al por mayor',bizH:'Kits empresariales y regalos corporativos',bizP:'Armamos kits con productos típicos de Medellín para clientes, colaboradores y eventos, y vendemos al por mayor productos seleccionados.',bizBtn:'Cotizar por WhatsApp',
  visitH:'Visítanos',how:'Cómo llegar →',payH:'Formas de pago',pay1:'Tarjeta débito y crédito en tienda',pay2:'Efectivo en tienda',pay3:'Transferencia, código QR y link de pago',
@@ -599,7 +615,7 @@ en:{
  each:'each',follow:'Follow us and <em>fall in love</em> with Medellín',
  foot:'Te Amo Medellín · Souvenirs. Prices in Colombian pesos (COP), taxes included. Stock is updated daily from our inventory, and we confirm everything when we receive your order.',
  mHome:'Home',mShop:'Shop',mBiz:'Corporate gifts',mStore:'Our store',mPaisa:'Paisa dictionary',mVisit:'Visit us & payments',mContact:'Contact us on WhatsApp',mAll:'See all',
- ann:['🚚 Delivery in Medellín & international shipping','🎁 Corporate gifts & kits · Quote on WhatsApp','📍 Two stores in El Poblado: Calle 10 & Manila'],promoEy:'Deal',buy:'Shop now!',
+ ann:['✈️ Leaving soon? We deliver to your hotel','🚚 Delivery in Medellín & international shipping','🎁 Corporate gifts & kits · Quote on WhatsApp','📍 Two stores in El Poblado: Calle 10 & Manila'],promoEy:'Deal',buy:'Shop now!',
  shopH:'Come <em>visit us</em>',shopP:'Two stores in El Poblado full of Medellín: souvenirs, crafts, coffee and local sweets.',
  bizEy:'Companies & wholesale',bizH:'Corporate kits and business gifts',bizP:'We build kits with typical Medellín products for clients, teams and events, and sell selected products wholesale.',bizBtn:'Get a quote on WhatsApp',
  visitH:'Visit us',how:'Directions →',payH:'Payment methods',pay1:'Debit and credit cards in store',pay2:'Cash in store',pay3:'Bank transfer, QR code and payment link',
@@ -651,13 +667,13 @@ menu.addEventListener("click",e=>{const a=e.target.closest("a");if(!a)return;
 let annI=0;function showAnn(){const a=T[LANG].ann,el=document.getElementById("annTxt");el.classList.remove("in");void el.offsetWidth;el.textContent=a[annI%a.length];el.classList.add("in")}
 showAnn();setInterval(()=>{annI++;showAnn()},4500);
 document.getElementById("tbLogo").onclick=e=>{e.preventDefault();scrollTo({top:0,behavior:smooth()})};
-document.getElementById("tbSearch").onclick=()=>{const q=document.getElementById("q");q.scrollIntoView({behavior:smooth(),block:"center"});setTimeout(()=>q.focus({preventScroll:true}),350)};
+document.getElementById("tbSearch").onclick=()=>{const sb=document.getElementById("searchBar"),q=document.getElementById("q");if(!sb.hidden&&!q.value){sb.hidden=true;return}sb.hidden=false;q.focus()};
 document.getElementById("tbBag").onclick=()=>{if(cart.size)openSheet();else document.getElementById("list").scrollIntoView({behavior:smooth(),block:"start"})};
 let promoTimer=null;
 function renderPromos(){const rail=document.getElementById("promoRail");if(!rail||!DATA.products.length)return;
   const ti=k=>{const i=(DATA.top||[]).indexOf(k);return i<0?99:i};
   const ps=DATA.products.filter(p=>p.promo&&p.photos.length&&avail(p).length).sort((a,b)=>ti(a.key)-ti(b.key)||a.rank-b.rank).slice(0,4);
-  rail.innerHTML=ps.map(p=>{const c=catOf(p.cat);return `<div class="pslide" style="--pc:${c.color}"><div class="ps-txt"><span class="ps-ey">${t("promoEy")}</span><b class="ps-big">${esc(p.promo)}</b><span class="ps-name">${esc(pn(p))}</span><button type="button" class="ps-btn" data-pgo="${p.key}">${t("buy")}</button></div><img src="${p.photos[0]}" alt="${esc(pn(p))}"></div>`}).join("");
+  rail.innerHTML=ps.map(p=>{const c=catOf(p.cat);return `<div class="pslide" style="--pc:${c.color}"><div class="ps-txt"><span class="ps-ey">${t("promoEy")}</span><b class="ps-big">${esc(p.promo)}</b><span class="ps-name2">${esc(pn(p))}</span><button type="button" class="ps-btn" data-pgo="${p.key}">${t("buy")}</button></div><img src="${p.photos[0]}" alt="${esc(pn(p))}"></div>`}).join("");
   const dots=document.getElementById("promoDots");dots.innerHTML=ps.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join("");
   rail.onscroll=()=>{const i=Math.round(rail.scrollLeft/rail.clientWidth);[...dots.children].forEach((d,j)=>d.classList.toggle("on",j===i))};
   clearInterval(promoTimer);if(ps.length>1&&!matchMedia("(prefers-reduced-motion: reduce)").matches)promoTimer=setInterval(()=>{if(document.hidden)return;const i=(Math.round(rail.scrollLeft/rail.clientWidth)+1)%ps.length;rail.scrollTo({left:i*rail.clientWidth,behavior:"smooth"})},5000);
