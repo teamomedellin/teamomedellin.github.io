@@ -462,6 +462,7 @@ html,body{overflow-x:clip}
 .opt-r:has(input:checked){border-color:var(--ink);background:#fffbea}
 .co-intl{background:#fffbea;border:1.5px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:12px}
 .co-intl p{margin:0;font-size:14px}
+.paybtn.cash{background:#1f8f4e}
 .co-sum{border-top:1.5px solid var(--line);padding-top:10px;margin-top:4px;display:grid;gap:4px}
 .co-sum div{display:flex;justify-content:space-between;font-size:14px}
 .co-sum .tot{font-size:17px;font-weight:700}.co-sum .tot b{font-family:var(--f-display);font-size:22px}
@@ -582,7 +583,7 @@ html,body{overflow-x:clip}
   <p class="note" data-i18n="note">Al enviarlo te confirmamos disponibilidad, total final y entrega. No se cobra nada desde aquí.</p>
   <div class="field"><label for="cname" data-i18n="yourname">Tu nombre</label><input id="cname" type="text" autocomplete="name" placeholder="Opcional" data-i18n-ph="optional"></div>
   <div class="actions">
-    <button type="button" class="paybtn" id="payBold" hidden><span data-i18n="payNow">Pagar ahora con Bold</span><small data-i18n="paySub">Tarjeta, PSE, Nequi · recoge en tienda</small></button>
+    <button type="button" class="paybtn" id="payBold" hidden><span data-i18n="payNow">Finalizar compra</span><small data-i18n="paySub">Pago en línea o en efectivo · domicilio o recoge en tienda</small></button>
     <p class="note paynote" id="payMsg" hidden></p>
     <a class="wa" id="wa" href="#" target="_blank" rel="noopener" data-i18n="send">Enviar pedido por WhatsApp</a>
     <button class="copy" id="copy" type="button" data-i18n="copy">Copiar pedido</button>
@@ -621,10 +622,15 @@ html,body{overflow-x:clip}
         <label class="opt-r"><input type="radio" name="tienda" value="manila"><span><b>Manila</b><small>Calle 13 #43D-27, Manila</small></span></label>
       </fieldset>
       <label><span data-i18n="coNotes">Notas (opcional)</span><textarea name="notas" rows="2"></textarea></label>
+      <fieldset id="coPayHow"><legend data-i18n="coPayHow">¿Cómo quieres pagar?</legend>
+        <label class="opt-r"><input type="radio" name="pago" value="bold" checked><span><b data-i18n="pmOnline">Pago en línea</b><small data-i18n="pmOnlineS">Tarjeta, PSE, Nequi</small></span></label>
+        <label class="opt-r" id="pmCashL"><input type="radio" name="pago" value="efectivo"><span><b data-i18n="pmCash">Efectivo</b><small id="pmCashS" data-i18n="pmCashS">Al recibir</small></span></label>
+      </fieldset>
       <div class="co-sum"><div><span data-i18n="coSub">Productos</span><b id="coSub"></b></div><div><span data-i18n="coShip">Envío</span><b id="coShipV"></b></div><div class="tot"><span>Total</span><b id="coTot"></b></div></div>
       <p class="note" data-i18n="coNote">Si algún producto se agotó, te devolvemos el valor o te ofrecemos otro diseño.</p>
       <p class="co-err" id="coErr" hidden></p>
       <button type="submit" class="paybtn" id="coPay"><span data-i18n="coPay">Pagar con Bold</span><small data-i18n="paySubX">Tarjeta, PSE, Nequi o Botón Bancolombia</small></button>
+      <button type="submit" class="paybtn cash" id="coCash" hidden><span data-i18n="coCashB">Enviar pedido por WhatsApp</span><small data-i18n="coCashBS">Pagas en efectivo al recibir · te confirmamos por WhatsApp</small></button>
     </div>
   </form>
 </section>
@@ -661,8 +667,8 @@ const T={es:{
  shipH:'Entregas',ship1:'Recoge en cualquiera de nuestras tiendas',ship2:'Domicilios en Medellín',ship3:'Envíos nacionales e internacionales',ship4:'El costo del envío te lo confirmamos por WhatsApp.',
  msg:(name,lines,total,promo)=>`¡Hola Te Amo Medellín! ${name?"Soy "+name+". ":""}Quiero hacer este pedido:\n\n${lines}\n\nTotal aproximado: ${total}${promo?" (antes de promos)":""}\n\n¿Me confirman disponibilidad y entrega? Gracias 💛`,
  rushH:'¿Te vas pronto de Medellín?',rushP:'Pide hoy y te lo llevamos a tu hotel o Airbnb, o recógelo en nuestra tienda.',refL:'Vengo de',
- coTitle:'Datos de entrega',coHow:'¿Cómo quieres recibirlo?',coMed:'Domicilio en Medellín',coNac:'Envío nacional',coStore:'Recoger en tienda',coFree:'Gratis',coIntl:'Envío internacional',coIntlS:'Cotiza por WhatsApp',coIntlP:'Para envíos fuera de Colombia primero revisamos que tus productos se puedan enviar a tu país. Envíanos el pedido por WhatsApp y te cotizamos.',coYou:'Tus datos',coName:'Nombre completo',coDocT:'Documento',coDoc:'Número',coCel:'Celular / WhatsApp',coMail:'Correo',coWhere:'Dirección de entrega',coDir:'Dirección',coDet:'Apto, hotel o indicaciones',coBarrio:'Barrio',coCity:'Ciudad',coDept:'Departamento',coWhich:'¿En cuál tienda?',coNotes:'Notas (opcional)',coSub:'Productos',coShip:'Envío',coNote:'Si algún producto se agotó, te devolvemos el valor o te ofrecemos otro diseño.',coPay:'Pagar con Bold',paySubX:'Tarjeta, PSE, Nequi o Botón Bancolombia',coMiss:'Revisa los campos marcados.',coDone:id=>`¡Pedido confirmado! Tu número es ${id}. Te contactaremos por WhatsApp para coordinar la entrega.`,coCheck:'Confirmando tu pago…',
- payNow:'Pagar ahora con Bold',paySub:'Tarjeta, PSE, Nequi · domicilio o recoge en tienda',payWait:'Preparando tu pago…',payErr:e=>'No pudimos iniciar el pago: '+e+'. Envíanos el pedido por WhatsApp.',payOk:'¡Pago recibido! Envíanos el pedido por WhatsApp para coordinar la entrega.',payKo:'El pago no se completó. Puedes intentarlo de nuevo o enviarnos el pedido por WhatsApp.',paidLine:(id,amt)=>`💳 PAGADO con Bold · ref. ${id} · ${amt}`,
+ coTitle:'Datos de entrega',coPayHow:'¿Cómo quieres pagar?',pmOnline:'Pago en línea',pmOnlineS:'Tarjeta, PSE, Nequi',pmCash:'Efectivo',pmCashS:'Al recibir el domicilio',pmCashT:'Al recoger en la tienda',coCashB:'Enviar pedido por WhatsApp',coCashBS:'Pagas en efectivo · te confirmamos por WhatsApp',cashSee:'Ver mi pedido con fotos',cashHi:'¡Hola Te Amo Medellín! 👋 Quiero hacer este pedido y pagar en efectivo:',coHow:'¿Cómo quieres recibirlo?',coMed:'Domicilio en Medellín',coNac:'Envío nacional',coStore:'Recoger en tienda',coFree:'Gratis',coIntl:'Envío internacional',coIntlS:'Cotiza por WhatsApp',coIntlP:'Para envíos fuera de Colombia primero revisamos que tus productos se puedan enviar a tu país. Envíanos el pedido por WhatsApp y te cotizamos.',coYou:'Tus datos',coName:'Nombre completo',coDocT:'Documento',coDoc:'Número',coCel:'Celular / WhatsApp',coMail:'Correo',coWhere:'Dirección de entrega',coDir:'Dirección',coDet:'Apto, hotel o indicaciones',coBarrio:'Barrio',coCity:'Ciudad',coDept:'Departamento',coWhich:'¿En cuál tienda?',coNotes:'Notas (opcional)',coSub:'Productos',coShip:'Envío',coNote:'Si algún producto se agotó, te devolvemos el valor o te ofrecemos otro diseño.',coPay:'Pagar con Bold',paySubX:'Tarjeta, PSE, Nequi o Botón Bancolombia',coMiss:'Revisa los campos marcados.',coDone:id=>`¡Pedido confirmado! Tu número es ${id}. Te contactaremos por WhatsApp para coordinar la entrega.`,coCheck:'Confirmando tu pago…',
+ payNow:'Finalizar compra',paySub:'Pago en línea o en efectivo · domicilio o recoge en tienda',payWait:'Preparando tu pago…',payErr:e=>'No pudimos iniciar el pago: '+e+'. Envíanos el pedido por WhatsApp.',payOk:'¡Pago recibido! Envíanos el pedido por WhatsApp para coordinar la entrega.',payKo:'El pago no se completó. Puedes intentarlo de nuevo o enviarnos el pedido por WhatsApp.',paidLine:(id,amt)=>`💳 PAGADO con Bold · ref. ${id} · ${amt}`,
  msgShort:(name,code,n,total,promo)=>`¡Hola Te Amo Medellín! ${name?"Soy "+name+". ":""}Quiero hacer este pedido 💛\n\nVer mi pedido: ${code}\n\n(${n} ${n===1?"producto":"productos"} · total aproximado ${total}${promo?", antes de promos":""})\n\n¿Me confirman disponibilidad y entrega? Gracias`,
  pedLink:'Ver mi pedido con fotos:',pedCode:'Código del pedido',staffBtn:'Equipo Te Amo: ver un pedido con fotos',vTitle:'Pedido del cliente',vLabel:'Pega aquí el mensaje de WhatsApp o el código del pedido',vGo:'Ver pedido',vPaste:'Pegar y ver pedido',vBad:'No encontramos un código de pedido. Copia el mensaje completo del cliente.',vMiss:'Producto que ya no está en el catálogo',
  bizMsg:'¡Hola Te Amo Medellín! Quiero cotizar kits empresariales / compra al por mayor. ',
@@ -690,8 +696,8 @@ en:{
  shipH:'Delivery',ship1:'Pick up at either of our stores',ship2:'Home delivery in Medellín',ship3:'National and international shipping',ship4:'We confirm the shipping cost on WhatsApp.',
  msg:(name,lines,total,promo)=>`Hi Te Amo Medellín! ${name?"I'm "+name+". ":""}I would like to order:\n\n${lines}\n\nApproximate total: ${total} COP${promo?" (before deals)":""}\n\nCould you confirm availability and delivery? Thank you 💛`,
  rushH:'Leaving Medellín soon?',rushP:'Order today and we’ll bring it to your hotel or Airbnb, or pick it up at our store.',refL:'Referred by',
- coTitle:'Delivery details',coHow:'How do you want to receive it?',coMed:'Delivery in Medellín',coNac:'Shipping in Colombia',coStore:'Store pickup',coFree:'Free',coIntl:'International shipping',coIntlS:'Quote on WhatsApp',coIntlP:'For shipping outside Colombia we first check that your products can be sent to your country. Send us your order on WhatsApp and we will quote it.',coYou:'Your details',coName:'Full name',coDocT:'ID type',coDoc:'ID number',coCel:'Mobile / WhatsApp',coMail:'Email',coWhere:'Delivery address',coDir:'Address',coDet:'Apt, hotel or directions',coBarrio:'Neighborhood',coCity:'City',coDept:'State / department',coWhich:'Which store?',coNotes:'Notes (optional)',coSub:'Products',coShip:'Shipping',coNote:'If an item sold out, we refund it or offer you another design.',coPay:'Pay with Bold',paySubX:'Card, PSE, Nequi or Bancolombia',coMiss:'Please check the highlighted fields.',coDone:id=>`Order confirmed! Your number is ${id}. We will contact you on WhatsApp to arrange delivery.`,coCheck:'Confirming your payment…',
- payNow:'Pay now with Bold',paySub:'Card, PSE, Nequi · delivery or store pickup',payWait:'Preparing your payment…',payErr:e=>'We could not start the payment: '+e+'. Send us your order on WhatsApp.',payOk:'Payment received! Send us your order on WhatsApp to arrange pickup.',payKo:'The payment was not completed. Try again or send us your order on WhatsApp.',paidLine:(id,amt)=>`💳 PAID with Bold · ref. ${id} · ${amt}`,
+ coTitle:'Delivery details',coPayHow:'How do you want to pay?',pmOnline:'Pay online',pmOnlineS:'Card, PSE, Nequi',pmCash:'Cash',pmCashS:'On delivery',pmCashT:'At store pickup',coCashB:'Send order on WhatsApp',coCashBS:'Pay cash · we confirm on WhatsApp',cashSee:'See my order with photos',cashHi:'Hi Te Amo Medellín! 👋 I want to place this order and pay in cash:',coHow:'How do you want to receive it?',coMed:'Delivery in Medellín',coNac:'Shipping in Colombia',coStore:'Store pickup',coFree:'Free',coIntl:'International shipping',coIntlS:'Quote on WhatsApp',coIntlP:'For shipping outside Colombia we first check that your products can be sent to your country. Send us your order on WhatsApp and we will quote it.',coYou:'Your details',coName:'Full name',coDocT:'ID type',coDoc:'ID number',coCel:'Mobile / WhatsApp',coMail:'Email',coWhere:'Delivery address',coDir:'Address',coDet:'Apt, hotel or directions',coBarrio:'Neighborhood',coCity:'City',coDept:'State / department',coWhich:'Which store?',coNotes:'Notes (optional)',coSub:'Products',coShip:'Shipping',coNote:'If an item sold out, we refund it or offer you another design.',coPay:'Pay with Bold',paySubX:'Card, PSE, Nequi or Bancolombia',coMiss:'Please check the highlighted fields.',coDone:id=>`Order confirmed! Your number is ${id}. We will contact you on WhatsApp to arrange delivery.`,coCheck:'Confirming your payment…',
+ payNow:'Checkout',paySub:'Pay online or in cash · delivery or store pickup',payWait:'Preparing your payment…',payErr:e=>'We could not start the payment: '+e+'. Send us your order on WhatsApp.',payOk:'Payment received! Send us your order on WhatsApp to arrange pickup.',payKo:'The payment was not completed. Try again or send us your order on WhatsApp.',paidLine:(id,amt)=>`💳 PAID with Bold · ref. ${id} · ${amt}`,
  msgShort:(name,code,n,total,promo)=>`Hi Te Amo Medellín! ${name?"I'm "+name+". ":""}I would like to place this order 💛\n\nSee my order: ${code}\n\n(${n} ${n===1?"item":"items"} · approximate total ${total} COP${promo?", before deals":""})\n\nCould you confirm availability and delivery? Thank you`,
  pedLink:'See my order with photos:',pedCode:'Order code',staffBtn:'Te Amo team: view an order with photos',vTitle:'Customer order',vLabel:'Paste the WhatsApp message or the order code here',vGo:'View order',vPaste:'Paste & view order',vBad:'No order code found. Copy the full customer message.',vMiss:'Product no longer in the catalog',
  bizMsg:'Hi Te Amo Medellín! I would like a quote for corporate kits / wholesale. ',
@@ -890,6 +896,10 @@ function orderText(){
   const ref=getRef();
   return t("msgShort")(name,`${SHARE_URL}#pedido=${code}`,n,fmt(total),[...cart.keys()].some(id=>OPT[pid(id)].p.promo))+(PAID?`\n\n${t("paidLine")(PAID.id,fmt(PAID.amount))}`:"")+(ref?`\n\n📍 ${t("refL")}: ${ref}`:"");
 }
+function cashText(c,e){const sub=cartSub(),sh=SHIP[e.tipo]||0,ref=getRef();
+  const lines=[...cart].map(([id,q])=>`• ${q} × ${lineName(id,true)}`).join("\n");
+  const ent=e.tipo==="tienda"?`🏬 Recojo en tienda ${e.tienda==="manila"?"Manila":"Calle 10"}`:`🛵 Domicilio en Medellín: ${e.dir}${e.detalle?" · "+e.detalle:""}, ${e.barrio}`;
+  return `${t("cashHi")}\n\n${t("cashSee")}: ${SHARE_URL}#pedido=${cartCode()}\n${lines}\n\nProductos ${fmt(sub)} · Envío ${sh?fmt(sh):"$0"} · *Total ${fmt(sub+sh)}*\n💵 Pago en efectivo ${e.tipo==="tienda"?"en la tienda":"al recibir"}\n\n👤 ${c.nombre} · ${c.tipoDoc} ${c.doc}\n📱 ${c.cel} · ${c.correo}\n${ent}`+(e.notas?`\n📝 ${e.notas}`:"")+(ref?`\n\n📍 ${t("refL")}: ${ref}`:"")}
 function refName(r){return String(r).replace(/[^\p{L}\p{N}\- _]/gu,"").slice(0,40).replace(/[-_]+/g," ").trim().replace(/\b\p{L}/gu,c=>c.toUpperCase())}
 (function(){try{const u=new URLSearchParams(location.search).get("ref")||(location.hash.match(/ref=([^&]+)/)||[])[1];if(u){const n=refName(decodeURIComponent(u));if(n)localStorage.setItem("tam_ref",JSON.stringify({n,t:Date.now()}))}}catch(_){}})();
 function getRef(){try{const x=JSON.parse(localStorage.getItem("tam_ref")||"null");if(x&&Date.now()-x.t<30*864e5)return x.n}catch(_){}return ""}
@@ -940,6 +950,9 @@ function coUpdate(){const tipo=coF.tipo.value;const intl=tipo==="intl";
   document.getElementById("coIntlBox").hidden=!intl;document.getElementById("coMain").hidden=intl;
   document.getElementById("coAddr").hidden=tipo==="tienda";document.getElementById("coShop").hidden=tipo!=="tienda";
   document.getElementById("coCityL").hidden=tipo!=="nacional";document.getElementById("coDeptL").hidden=tipo!=="nacional";document.getElementById("coBarrioL").hidden=tipo==="nacional";
+  const nac=tipo==="nacional";document.getElementById("pmCashL").hidden=nac;if(nac&&coF.pago.value==="efectivo")coF.pago.value="bold";
+  document.getElementById("pmCashS").textContent=t(tipo==="tienda"?"pmCashT":"pmCashS");
+  const cash=coF.pago.value==="efectivo";document.getElementById("coPay").hidden=cash;document.getElementById("coCash").hidden=!cash;
   const sub=cartSub(),sh=SHIP[tipo]||0;document.getElementById("coSub").textContent=fmt(sub);document.getElementById("coShipV").textContent=sh?fmt(sh):t("coFree");document.getElementById("coTot").textContent=fmt(sub+sh);
   document.getElementById("coIntlWa").href=waLink(orderText()+"\n\n🌎 Envío internacional")}
 coF.addEventListener("change",coUpdate);
@@ -955,6 +968,7 @@ coF.addEventListener("submit",async ev=>{ev.preventDefault();const tipo=coF.tipo
   const v=n=>coF[n].value.trim();const cliente={nombre:v("nombre"),tipoDoc:coF.tipoDoc.value,doc:v("doc"),cel:v("cel"),correo:v("correo")};
   const entrega={tipo,tienda:tipo==="tienda"?coF.tienda.value:"",dir:v("dir"),detalle:v("detalle"),barrio:v("barrio"),ciudad:tipo==="medellin"?"Medellín":v("ciudad"),depto:tipo==="medellin"?"Antioquia":v("depto"),notas:v("notas")};
   try{localStorage.setItem("tam_cliente",JSON.stringify({nombre:cliente.nombre,doc:cliente.doc,cel:cliente.cel,correo:cliente.correo,dir:entrega.dir,detalle:entrega.detalle,barrio:entrega.barrio}))}catch(_){}
+  if(coF.pago.value==="efectivo"&&tipo!=="nacional"){window.open(waLink(cashText(cliente,entrega)),"_blank","noopener");return}
   const btn=document.getElementById("coPay");btn.disabled=true;coErr("");
   try{const items=[...cart].map(([k,q])=>({id:pid(k),q,d:pdx(k)}));
     const r=await fetch(PAY.worker,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items,cliente,entrega,ref:getRef()})});const d=await r.json();if(!r.ok||d.error)throw new Error(d.error||r.status);
