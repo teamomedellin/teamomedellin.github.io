@@ -509,6 +509,20 @@ html,body{overflow-x:clip}
 .ps-btn{margin-top:4px !important;padding:6px 12px !important;font-size:12.5px !important;box-shadow:none !important;border:0 !important;background:var(--ink) !important}
 .ps-btn:hover{background:var(--red) !important}
 @media (min-width:1000px){.pslide{flex:1 1 0 !important;grid-template-columns:84px 1fr !important}.pslide img{width:84px !important;height:84px}.ps-big{font-size:22px !important}}
+
+/* Para emprender */
+.gain{display:block;font-size:11.5px;font-weight:800;color:var(--ink);background:var(--c-tip);border-radius:6px;padding:2px 6px;margin-top:3px;line-height:1.25}
+.upsell{display:block;width:100%;text-align:left;margin:8px 0 2px;background:#fff6c9;border:1.5px dashed #c9b23a;border-radius:10px;padding:7px 9px;font:700 12.5px/1.3 var(--f-body);color:var(--ink);cursor:pointer}
+.upsell:hover{background:var(--c-tip)}
+.bulk{display:flex;align-items:center;gap:14px;width:100%;margin:18px 0 4px;text-align:left;background:var(--ink);color:var(--white);border:0;border-radius:18px;padding:16px 18px;cursor:pointer;font:inherit}
+.bulk:hover .bk-go{background:var(--red);color:var(--white)}
+.bk-ic{font-size:30px}
+.bk-t{flex:1;display:flex;flex-direction:column;gap:3px}
+.bk-t b{font-family:var(--f-display);font-stretch:112%;font-size:clamp(17px,2.2vw,21px);line-height:1.1}
+.bk-t small{font-size:13.5px;color:#e7e3d6}
+.bk-go{background:var(--c-tip);color:var(--ink);font-weight:800;font-size:13.5px;border-radius:999px;padding:9px 14px;white-space:nowrap;transition:background .15s}
+@media (max-width:600px){.bulk{flex-wrap:wrap;gap:10px}.bk-go{width:100%;text-align:center}}
+.menu a.m-hi{color:var(--c-tip)}
 </style>
 
 <div class="announce" aria-live="polite"><span id="annTxt">Domicilios en Medellín · Envíos nacionales e internacionales</span></div>
@@ -536,6 +550,7 @@ html,body{overflow-x:clip}
   <div class="wrap promo-head"><h2 data-i18n="promoH">Promos de la semana</h2></div>
   <div class="promo-rail" id="promoRail" aria-label="Promociones"></div>
   <div class="promo-dots" id="promoDots" hidden></div>
+  <div class="wrap"><button type="button" class="bulk" id="bulkBan" hidden><span class="bk-ic" aria-hidden="true">💼</span><span class="bk-t"><b data-i18n="bkH">¿Emprendes? Compra por paquete y gana</b><small id="bkP"></small></span><span class="bk-go" data-i18n="bkGo">Ver precios por mayor →</span></button></div>
   <div class="wrap hero-txt">
     <h1 data-i18n-html="h1">Un pedacito de <em>Medellín</em> para llevar.</h1>
     <p data-i18n="lead">Elige, pide por WhatsApp y te lo llevamos a tu hotel.</p>
@@ -612,6 +627,7 @@ html,body{overflow-x:clip}
   <ul class="menu-list">
     <li><a href="#" data-go="top" data-i18n="mHome">Inicio</a></li>
     <li><button type="button" class="menu-acc" id="mShop" aria-expanded="false"><span data-i18n="mShop">Tienda</span><i aria-hidden="true">+</i></button><ul class="menu-sub" id="mCats" hidden></ul></li>
+    <li><a href="#" data-cat="Para emprender" class="m-hi" data-i18n="mBulk">💼 Para emprender · por mayor</a></li>
     <li><a href="#empresas" data-go="empresas" data-i18n="mBiz">Regalos corporativos</a></li>
     <li><a href="#tienda" data-go="tienda" data-i18n="mStore">Nuestra tienda</a></li>
     <li><a href="#paisa" data-go="paisa" data-i18n="mPaisa">Diccionario paisa</a></li>
@@ -700,7 +716,7 @@ const T={es:{
  hello:'¡Quiubo, pues!',topEy:'★ Los favoritos de Medallo',topH:'Lo que todo el mundo <b>se lleva</b>',topSub:'<q>¡Eavemaría, cómo se venden estos!</q> Los productos que más salen de nuestras tiendas.',prev:'Anterior',next:'Siguiente',
  ticker:["¿Qué más pues?","¡Eavemaría!","Hágale pues","Qué chimba, parce","Un tintico, ¿o qué?","Pa' que vuelvas","Medallo te quiere","¡Ay, tan bonito!","Bien o qué"],
  diccH:'Diccionario <em>paisa</em>',diccP:'Toca cada palabra y aprende a hablar como un paisa.',diccEy:'Zona paisa · opcional',diccTeaser:'¿Sabes qué es un tintico o un parce? Entra, aprende a hablar como paisa y juega “¿Qué tan paisa eres?”.',diccOpen:'Entrar',diccClose:'Cerrar',tap:'Toca para ver',waHi:'¡Hola Te Amo Medellín! ¿Qué más pues? Quiero hacer una pregunta.',qTitle:'¿Qué tan paisa eres?',qNext:'Siguiente →',qSee:'Ver resultado →',qAgain:'Jugar otra vez',qWa:'Contárselo a Te Amo',qr1:'¡Uy, parce! Le falta un tintico más. Repase el diccionario.',qr2:'¡Vas bien! Ya casi sos paisa de verdad.',qr3:'¡Eavemaría! Sos más paisa que una arepa.',qShare:(n,m)=>`¡Hola Te Amo Medellín! Saqué ${n}/${m} en “¿Qué tan paisa eres?” 😄`,
- catSay:{"Souvenirs":"Pa' que se acuerden de Medallo","Pocillos y copas":"¿Un tintico o un guaro, pues?","Ropa y gorras":"¡Qué chimba de pinta, parce!","Accesorios":"Detallitos hechos con amor paisa","Café":"Sin tintico no arranca el día","Dulces de café":"Café pa' comérselo, ¡eavemaría!","Dulces típicos":"Como los de la abuela, mijo","Chocolates":"Un gustico de chocolate, pa' consentirse","Miniaturas":"La chiva más chiquita de Antioquia"},
+ catSay:{"Para emprender":"Pa' vender en el colegio, la oficina o tu tiendita","Souvenirs":"Pa' que se acuerden de Medallo","Pocillos y copas":"¿Un tintico o un guaro, pues?","Ropa y gorras":"¡Qué chimba de pinta, parce!","Accesorios":"Detallitos hechos con amor paisa","Café":"Sin tintico no arranca el día","Dulces de café":"Café pa' comérselo, ¡eavemaría!","Dulces típicos":"Como los de la abuela, mijo","Chocolates":"Un gustico de chocolate, pa' consentirse","Miniaturas":"La chiva más chiquita de Antioquia"},
  h1:'Un pedacito de <em>Medellín</em> para llevar.',lead:'Elige, pide por WhatsApp y te lo llevamos a tu hotel.',
  search:'Buscar: café, pocillo, camiseta…',loading:'Cargando productos disponibles…',all:'Todo',top:'Los más vendidos',
  count1:'1 producto disponible',countN:n=>n+' productos disponibles',add:'+ Agregar',last:'Últimas unidades',soon:'Foto pronto',promo:'Promo',design:'diseño',swipe:'desliza',hot:'🔥 Más vendido',save:(n,tot,dif)=>`Lleva ${n} por ${tot} · ahorras ${dif}`,sample:'Muestra',more:'Más diseños por WhatsApp →',moreMsg:n=>`¡Hola Te Amo Medellín! Quiero ver más diseños y colores de: ${n}. ¿Me envían fotos? 💛`,
@@ -712,7 +728,7 @@ const T={es:{
  each:'c/u',follow:'Síguenos y <em>enamórate</em> de Medellín',
  foot:'Te Amo Medellín · Souvenirs. Los precios incluyen impuestos. Las cantidades se actualizan cada día desde nuestro inventario, así que te confirmamos todo al recibir tu pedido.',
  mHome:'Inicio',mShop:'Tienda',mBiz:'Regalos corporativos',mStore:'Nuestra tienda',mPaisa:'Diccionario paisa',mVisit:'Visítanos y formas de pago',mContact:'Contáctanos por WhatsApp',mAll:'Ver todo',
- ann:['✈️ ¿Te vas pronto? Te lo llevamos a tu hotel','🚚 Domicilios en Medellín y envíos internacionales','🎁 Kits corporativos: cotiza por WhatsApp','📍 Tiendas en Calle 10 y Manila, El Poblado'],promoEy:'Promo',bhEy:'Souvenirs de Medellín · El Poblado',bhH:'Un pedacito de <em>Medellín</em> pa’ llevar',bhP:'Café, artesanías, camisetas y detalles paisas, elegidos con amor en nuestras dos tiendas.',bhShop:'Ver tienda',bhBiz:'Regalos corporativos',bhT1:'🛵 Domicilio a tu hotel',bhT2:'📦 Envíos a toda Colombia',bhT3:'🏬 2 tiendas en El Poblado',promoH:'Promos de la semana',buy:'¡Compra aquí!',
+ ann:['✈️ ¿Te vas pronto? Te lo llevamos a tu hotel','💼 ¿Emprendes? Arequipe La Villa por paquete x30 a precio por mayor','🚚 Domicilios en Medellín y envíos internacionales','🎁 Kits corporativos: cotiza por WhatsApp','📍 Tiendas en Calle 10 y Manila, El Poblado'],promoEy:'Promo',packU:u=>`Sale a ${u} c/u`,packG:(s,g)=>`Véndelo a ${s} y ganas ${g} por paquete`,upTxt:u=>`💼 ¿Vas a revender? Por paquete x30 sale a ${u} c/u`,bkH:'¿Emprendes? Compra por paquete y gana',bkP:(n,u,s,g)=>`${n}: sale a ${u} c/u. Si lo vendes a ${s}, te ganas ${g} por paquete.`,bkGo:'Ver precios por mayor →',mBulk:'💼 Para emprender · por mayor',bhEy:'Souvenirs de Medellín · El Poblado',bhH:'Un pedacito de <em>Medellín</em> pa’ llevar',bhP:'Café, artesanías, camisetas y detalles paisas, elegidos con amor en nuestras dos tiendas.',bhShop:'Ver tienda',bhBiz:'Regalos corporativos',bhT1:'🛵 Domicilio a tu hotel',bhT2:'📦 Envíos a toda Colombia',bhT3:'🏬 2 tiendas en El Poblado',promoH:'Promos de la semana',buy:'¡Compra aquí!',
  shopH:'Ven a <em>conocernos</em>',shopP:'Dos tiendas en El Poblado llenas de Medellín: souvenirs, artesanías, café y dulces típicos.',
  bizEy:'Empresas y al por mayor',bizH:'Kits empresariales y regalos corporativos',bizP:'Armamos kits con productos típicos de Medellín para clientes, colaboradores y eventos, y vendemos al por mayor productos seleccionados.',bizBtn:'Cotizar por WhatsApp',
  visitH:'Visítanos',how:'Cómo llegar →',payH:'Formas de pago',pay1:'Tarjeta débito y crédito en tienda',pay2:'Efectivo en tienda',pay3:'Transferencia, código QR y link de pago',
@@ -729,7 +745,7 @@ en:{
  hello:'¡Quiubo, pues! · Hey there!',topEy:'★ Medallo’s favorites',topH:'What everyone <b>takes home</b>',topSub:'<q>¡Eavemaría!</q> (wow!) These are the products that fly off our shelves.',prev:'Previous',next:'Next',
  ticker:["¿Qué más pues? <small>what’s up?</small>","¡Eavemaría! <small>wow!</small>","Hágale pues <small>go for it</small>","Qué chimba, parce <small>so cool, buddy</small>","Un tintico <small>a little coffee</small>","Pa' que vuelvas <small>come back soon</small>","Medallo te quiere <small>Medellín loves you</small>"],
  diccH:'Paisa <em>dictionary</em>',diccP:'Tap each word and learn to talk like a local paisa.',diccEy:'Paisa zone · optional',diccTeaser:'Know what a tintico or a parce is? Come in, learn to talk like a paisa and play “How paisa are you?”.',diccOpen:'Open',diccClose:'Close',tap:'Tap to flip',waHi:'Hi Te Amo Medellín! ¿Qué más pues? I have a question.',qTitle:'How paisa are you?',qNext:'Next →',qSee:'See my result →',qAgain:'Play again',qWa:'Tell Te Amo',qr1:'¡Uy, parce! You need another tintico. Check the dictionary.',qr2:'Not bad! You are almost a real paisa.',qr3:'¡Eavemaría! You are more paisa than an arepa.',qShare:(n,m)=>`Hi Te Amo Medellín! I scored ${n}/${m} on “How paisa are you?” 😄`,
- catSay:{"Souvenirs":"So you never forget Medallo","Pocillos y copas":"A tintico (coffee) or a guaro (aguardiente)?","Ropa y gorras":"¡Qué chimba! Looking good, parce","Accesorios":"Little treasures made with paisa love","Café":"No tintico, no day: Colombian coffee","Dulces de café":"Coffee you can eat. ¡Eavemaría!","Dulces típicos":"Just like grandma used to make","Chocolates":"A little chocolate treat, paisa style","Miniaturas":"Antioquia’s tiniest chiva bus"},
+ catSay:{"Para emprender":"Resell it at school, the office or your little shop","Souvenirs":"So you never forget Medallo","Pocillos y copas":"A tintico (coffee) or a guaro (aguardiente)?","Ropa y gorras":"¡Qué chimba! Looking good, parce","Accesorios":"Little treasures made with paisa love","Café":"No tintico, no day: Colombian coffee","Dulces de café":"Coffee you can eat. ¡Eavemaría!","Dulces típicos":"Just like grandma used to make","Chocolates":"A little chocolate treat, paisa style","Miniaturas":"Antioquia’s tiniest chiva bus"},
  h1:'A little piece of <em>Medellín</em> to take home.',lead:'Pick, order on WhatsApp and we deliver to your hotel.',
  search:'Search: coffee, mug, T-shirt…',loading:'Loading available products…',all:'All',top:'Best sellers',
  count1:'1 product available',countN:n=>n+' products available',add:'+ Add',last:'Last units',soon:'Photo soon',promo:'Deal',design:'design',swipe:'swipe',hot:'🔥 Best seller',save:(n,tot,dif)=>`${n} for ${tot} · save ${dif}`,sample:'Sample',more:'More designs on WhatsApp →',moreMsg:n=>`Hi Te Amo Medellín! I'd like to see more designs and colors of: ${n}. Could you send me photos? 💛`,
@@ -741,7 +757,7 @@ en:{
  each:'each',follow:'Follow us and <em>fall in love</em> with Medellín',
  foot:'Te Amo Medellín · Souvenirs. Prices in Colombian pesos (COP), taxes included. Stock is updated daily from our inventory, and we confirm everything when we receive your order.',
  mHome:'Home',mShop:'Shop',mBiz:'Corporate gifts',mStore:'Our store',mPaisa:'Paisa dictionary',mVisit:'Visit us & payments',mContact:'Contact us on WhatsApp',mAll:'See all',
- ann:['✈️ Leaving soon? We deliver to your hotel','🚚 Delivery in Medellín & international shipping','🎁 Corporate gifts & kits · Quote on WhatsApp','📍 Two stores in El Poblado: Calle 10 & Manila'],promoEy:'Deal',bhEy:'Medellín souvenirs · El Poblado',bhH:'A little piece of <em>Medellín</em> to take home',bhP:'Coffee, handicrafts, T-shirts and paisa gifts, picked with love in our two stores.',bhShop:'Shop now',bhBiz:'Corporate gifts',bhT1:'🛵 Delivery to your hotel',bhT2:'📦 Shipping across Colombia',bhT3:'🏬 2 stores in El Poblado',promoH:'This week’s deals',buy:'Shop now!',
+ ann:['✈️ Leaving soon? We deliver to your hotel','💼 Reselling? Arequipe La Villa in packs of 30 at wholesale price','🚚 Delivery in Medellín & international shipping','🎁 Corporate gifts & kits · Quote on WhatsApp','📍 Two stores in El Poblado: Calle 10 & Manila'],promoEy:'Deal',packU:u=>`Only ${u} each`,packG:(s,g)=>`Resell at ${s} and earn ${g} per pack`,upTxt:u=>`💼 Reselling? Pack of 30 at ${u} each`,bkH:'Starting a business? Buy by the pack',bkP:(n,u,s,g)=>`${n}: ${u} each. Resell at ${s} and earn ${g} per pack.`,bkGo:'See wholesale prices →',mBulk:'💼 Wholesale · for resellers',bhEy:'Medellín souvenirs · El Poblado',bhH:'A little piece of <em>Medellín</em> to take home',bhP:'Coffee, handicrafts, T-shirts and paisa gifts, picked with love in our two stores.',bhShop:'Shop now',bhBiz:'Corporate gifts',bhT1:'🛵 Delivery to your hotel',bhT2:'📦 Shipping across Colombia',bhT3:'🏬 2 stores in El Poblado',promoH:'This week’s deals',buy:'Shop now!',
  shopH:'Come <em>visit us</em>',shopP:'Two stores in El Poblado full of Medellín: souvenirs, crafts, coffee and local sweets.',
  bizEy:'Companies & wholesale',bizH:'Corporate kits and business gifts',bizP:'We build kits with typical Medellín products for clients, teams and events, and sell selected products wholesale.',bizBtn:'Get a quote on WhatsApp',
  visitH:'Visit us',how:'Directions →',payH:'Payment methods',pay1:'Debit and credit cards in store',pay2:'Cash in store',pay3:'Bank transfer, QR code and payment link',
@@ -805,6 +821,7 @@ function renderPromos(){const rail=document.getElementById("promoRail");if(!rail
   const dots=document.getElementById("promoDots");dots.innerHTML=ps.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join("");
   rail.onscroll=()=>{const i=Math.round(rail.scrollLeft/rail.clientWidth);[...dots.children].forEach((d,j)=>d.classList.toggle("on",j===i))};
   clearInterval(promoTimer);
+  const bk=DATA.products.find(x=>x.pack&&avail(x).length),bb=document.getElementById("bulkBan");if(bb){bb.hidden=!bk;if(bk){const o=selected(bk),u=Math.round(o.price/bk.pack.n);document.getElementById("bkP").textContent=t("bkP")(pn(bk),fmt(u),fmt(bk.pack.sug),fmt((bk.pack.sug-u)*bk.pack.n));bb.onclick=()=>goTo({cat:bk.cat})}}
   rail.onclick=e=>{const b=e.target.closest("[data-pgo]");if(!b)return;cat="Todo";query="";document.getElementById("q").value="";renderChips();renderList();const el=document.querySelector(`.grid [data-card="${b.dataset.pgo}"]`);if(el){el.scrollIntoView({behavior:smooth(),block:"center"});el.classList.add("in","flash");setTimeout(()=>el.classList.remove("flash"),2200)}}}
 function renderChips(){
   const el=document.getElementById("chips"); el.innerHTML="";
@@ -830,7 +847,10 @@ function bodyHTML(p,d){
   const hot=(DATA.top||[]).includes(p.key)?`<span class="hot">${t("hot")}</span>`:"";
   let save="";const pm=String(p.promo||"").match(/(\d+)\s*x\s*\$?\s*([\d.]+)/i);
   if(pm){const n=+pm[1],tot=+pm[2].replace(/\./g,""),dif=n*o.price-tot;if(dif>0)save=`<span class="save">${t("save")(n,fmt(tot),fmt(dif))}</span>`}
-  return `<div class="body">${hot}<h3 class="name">${esc(pn(p))}</h3>${dn}${moreHTML(p)}${opts}<div class="row"><span class="pwrap"><span class="price">${fmt(o.price)}</span>${save}</span><span>${controlHTML(K(o.id,d))}</span></div></div>`;
+  if(p.pack){const u=Math.round(o.price/p.pack.n),g=(p.pack.sug-u)*p.pack.n;save=`<span class="save">${t("packU")(fmt(u))}</span>`+(g>0?`<span class="gain">${t("packG")(fmt(p.pack.sug),fmt(g))}</span>`:"")}
+  const upP=p.up&&DATA.products.find(x=>x.key===p.up&&avail(x).length);
+  const up=upP?`<button type="button" class="upsell" data-upgo="${upP.key}">${t("upTxt")(upP.pack?fmt(Math.round(selected(upP).price/upP.pack.n)):"")} →</button>`:"";
+  return `<div class="body">${hot}<h3 class="name">${esc(pn(p))}</h3>${dn}${moreHTML(p)}${opts}${up}<div class="row"><span class="pwrap"><span class="price">${fmt(o.price)}</span>${save}</span><span>${controlHTML(K(o.id,d))}</span></div></div>`;
 }
 function cardHTML(p){
   const c=catOf(p.cat), o=selected(p);
@@ -875,6 +895,7 @@ function goTo(g){
 }
 document.getElementById("words").addEventListener("click",e=>{
   const go=e.target.closest(".go"); if(go){goTo(WORDS[+go.dataset.go].go);return}
+  const ug=e.target.closest("[data-upgo]"); if(ug){goTo({key:ug.dataset.upgo});return}
   const b=e.target.closest(".flip"); if(!b)return; const on=b.getAttribute("aria-pressed")!=="true";
   b.setAttribute("aria-pressed",String(on)); const g=b.parentElement.querySelector(".go"); if(g){g.tabIndex=on?0:-1}
 });
