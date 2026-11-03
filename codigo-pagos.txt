@@ -158,7 +158,7 @@ export default {
         if (!env.PANEL_PIN || url.searchParams.get("pin") !== env.PANEL_PIN) return new Response("Clave incorrecta", { status: 401 });
         if (!env.NTFY_TOPIC) return new Response("Falta la variable NTFY_TOPIC en Cloudflare");
         const r = await enviarAviso(env, "Prueba de aviso Te Amo Medellín", "Si ves esto, los avisos de pedidos funcionan ✅");
-        return new Response(r === "ok" ? "✅ Aviso enviado. Revisa el celular." : "❌ No se pudo enviar: " + r, { headers: { "content-type": "text/plain; charset=utf-8" } });
+        return new Response(r === "ok" ? "✅ Aviso enviado. Revisa el celular." : "❌ No se pudo enviar (" + (env.NTFY_TOKEN ? "con cuenta" : "SIN cuenta: falta NTFY_TOKEN") + "): " + r, { headers: { "content-type": "text/plain; charset=utf-8" } });
       }
       if (url.pathname === "/pedidos" || url.pathname === "/estado") {
         let pin = url.searchParams.get("pin") || "";
