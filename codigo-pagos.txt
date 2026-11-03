@@ -81,18 +81,27 @@ async function marcarPagado(env, orderId, info) {
 }
 
 async function avisar(env, p) {
-  if (!env.NTFY_TOPIC) return "falta la variable NTFY_TOPIC";
   const ent = p.entrega.tipo === "tienda" ? "Recoge en " + (p.entrega.tienda === "manila" ? "Manila" : "Calle 10") : p.entrega.tipo === "medellin" ? "Domicilio Medellín · " + p.entrega.barrio : "Envío nacional · " + p.entrega.ciudad;
   const n = p.lineas.reduce((a, l) => a + l.q, 0);
   return enviarAviso(env, "Nuevo pedido pagado " + fmt(p.total) + (p.modo === "pruebas" ? " (PRUEBA)" : ""), p.orderId + " · " + n + (n === 1 ? " producto" : " productos") + "\n" + ent + "\n" + p.cliente.nombre);
 }
 
 async function enviarAviso(env, titulo, texto) {
+  const panelUrl = "https://" + env.WORKER_HOST + "/pedidos";
   try {
+    if (env.TELEGRAM_TOKEN) {
+      if (!env.TELEGRAM_CHAT) return "falta la variable TELEGRAM_CHAT";
+      const r = await fetch("https://api.telegram.org/bot" + String(env.TELEGRAM_TOKEN).trim() + "/sendMessage", {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ chat_id: String(env.TELEGRAM_CHAT).trim(), text: "🛍️ " + titulo + "\n\n" + texto, reply_markup: { inline_keyboard: [[{ text: "Ver pedidos", url: panelUrl }]] } }),
+      });
+      return r.ok ? "ok" : "Telegram respondió " + r.status + ": " + (await r.text()).slice(0, 200);
+    }
+    if (!env.NTFY_TOPIC) return "faltan las variables de Telegram";
     const r = await fetch("https://ntfy.sh/", {
       method: "POST",
       headers: { "content-type": "application/json", ...(env.NTFY_TOKEN ? { Authorization: "Bearer " + String(env.NTFY_TOKEN).trim() } : {}) },
-      body: JSON.stringify({ topic: String(env.NTFY_TOPIC).trim(), title: titulo, message: texto, tags: ["shopping_bags", "moneybag"], priority: 4, click: "https://" + env.WORKER_HOST + "/pedidos" }),
+      body: JSON.stringify({ topic: String(env.NTFY_TOPIC).trim(), title: titulo, message: texto, tags: ["shopping_bags", "moneybag"], priority: 4, click: panelUrl }),
     });
     return r.ok ? "ok" : "ntfy respondió " + r.status + ": " + (await r.text()).slice(0, 200);
   } catch (e) { return "error: " + String(e.message || e); }
@@ -154,11 +163,17 @@ export default {
         if (v.payment_status === "APPROVED") p = await marcarPagado(env, orderId, { transaction_id: v.transaction_id, total: v.total, metodo: v.payment_method, via: "consulta" });
         return Response.json({ estado: v.payment_status, total: p ? p.total : v.total }, { headers: h });
       }
+      if (url.pathname === "/telegram-id") {
+        if (!env.PANEL_PIN || url.searchParams.get("pin") !== env.PANEL_PIN) return new Response("Clave incorrecta", { status: 401 });
+        if (!env.TELEGRAM_TOKEN) return new Response("Primero guarda TELEGRAM_TOKEN en Cloudflare y dale Deploy", { headers: { "content-type": "text/plain; charset=utf-8" } });
+        const r = await (await fetch("https://api.telegram.org/bot" + String(env.TELEGRAM_TOKEN).trim() + "/getUpdates")).json();
+        const ids = [...new Set((r.result || []).map(u => (u.message || u.my_chat_member || {}).chat).filter(Boolean).map(c => c.id + "  (" + (c.first_name || c.title || "") + ")"))];
+        return new Response(ids.length ? "Tu número de chat es:\n\n" + ids.join("\n") + "\n\nCópialo en Cloudflare como TELEGRAM_CHAT." : r.ok === false ? "La llave del bot no es válida: " + (r.description || "") : "Aún no veo mensajes. Abre tu bot en Telegram, escríbele «hola» y recarga esta página.", { headers: { "content-type": "text/plain; charset=utf-8" } });
+      }
       if (url.pathname === "/probar-aviso") {
         if (!env.PANEL_PIN || url.searchParams.get("pin") !== env.PANEL_PIN) return new Response("Clave incorrecta", { status: 401 });
-        if (!env.NTFY_TOPIC) return new Response("Falta la variable NTFY_TOPIC en Cloudflare");
         const r = await enviarAviso(env, "Prueba de aviso Te Amo Medellín", "Si ves esto, los avisos de pedidos funcionan ✅");
-        return new Response(r === "ok" ? "✅ Aviso enviado. Revisa el celular." : "❌ No se pudo enviar (" + (env.NTFY_TOKEN ? "con cuenta" : "SIN cuenta: falta NTFY_TOKEN") + "): " + r, { headers: { "content-type": "text/plain; charset=utf-8" } });
+        return new Response(r === "ok" ? "✅ Aviso enviado" + (env.TELEGRAM_TOKEN ? " por Telegram" : "") + ". Revisa el celular." : "❌ No se pudo enviar: " + r, { headers: { "content-type": "text/plain; charset=utf-8" } });
       }
       if (url.pathname === "/pedidos" || url.pathname === "/estado") {
         let pin = url.searchParams.get("pin") || "";
