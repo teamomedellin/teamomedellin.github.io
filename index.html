@@ -441,6 +441,10 @@ html,body{overflow-x:clip}
 .ps-btn{margin-top:10px;background:var(--ink);color:var(--white);border:0;box-shadow:none;padding:11px 20px;font-size:14px}
 .ps-btn:hover{background:var(--red)}
 .pslide img{justify-self:stretch;align-self:stretch;width:100%;height:100%;aspect-ratio:auto;object-fit:cover;border:0;border-radius:0;box-shadow:none;transform:none;min-height:0;-webkit-mask-image:linear-gradient(to right,transparent,#000 22%);mask-image:linear-gradient(to right,transparent,#000 22%)}
+.paybtn{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;border:0;border-radius:14px;padding:12px;background:var(--ink);color:var(--white);font:700 16px var(--f-body);cursor:pointer}
+.paybtn small{font-weight:500;font-size:12px;opacity:.75}
+.paybtn:hover{background:var(--red)}.paybtn:disabled{opacity:.6;cursor:wait}
+.paynote{text-align:center;color:var(--green);font-weight:600;margin:0}
 </style>
 
 <div class="announce" aria-live="polite"><span id="annTxt">Domicilios en Medellín · Envíos nacionales e internacionales</span></div>
@@ -556,6 +560,8 @@ html,body{overflow-x:clip}
   <p class="note" data-i18n="note">Al enviarlo te confirmamos disponibilidad, total final y entrega. No se cobra nada desde aquí.</p>
   <div class="field"><label for="cname" data-i18n="yourname">Tu nombre</label><input id="cname" type="text" autocomplete="name" placeholder="Opcional" data-i18n-ph="optional"></div>
   <div class="actions">
+    <button type="button" class="paybtn" id="payBold" hidden><span data-i18n="payNow">Pagar ahora con Bold</span><small data-i18n="paySub">Tarjeta, PSE, Nequi · recoge en tienda</small></button>
+    <p class="note paynote" id="payMsg" hidden></p>
     <a class="wa" id="wa" href="#" target="_blank" rel="noopener" data-i18n="send">Enviar pedido por WhatsApp</a>
     <button class="copy" id="copy" type="button" data-i18n="copy">Copiar pedido</button>
     <div class="toast" id="toast" aria-live="polite"></div>
@@ -595,6 +601,7 @@ const T={es:{
  shipH:'Entregas',ship1:'Recoge en cualquiera de nuestras tiendas',ship2:'Domicilios en Medellín',ship3:'Envíos nacionales e internacionales',ship4:'El costo del envío te lo confirmamos por WhatsApp.',
  msg:(name,lines,total,promo)=>`¡Hola Te Amo Medellín! ${name?"Soy "+name+". ":""}Quiero hacer este pedido:\n\n${lines}\n\nTotal aproximado: ${total}${promo?" (antes de promos)":""}\n\n¿Me confirman disponibilidad y entrega? Gracias 💛`,
  rushH:'¿Te vas pronto de Medellín?',rushP:'Pide hoy y te lo llevamos a tu hotel o Airbnb, o recógelo en nuestra tienda.',refL:'Vengo de',
+ payNow:'Pagar ahora con Bold',paySub:'Tarjeta, PSE, Nequi · recoge en tienda',payWait:'Preparando tu pago…',payErr:e=>'No pudimos iniciar el pago: '+e+'. Envíanos el pedido por WhatsApp.',payOk:'¡Pago recibido! Envíanos el pedido por WhatsApp para coordinar la entrega.',payKo:'El pago no se completó. Puedes intentarlo de nuevo o enviarnos el pedido por WhatsApp.',paidLine:(id,amt)=>`💳 PAGADO con Bold · ref. ${id} · ${amt}`,
  msgShort:(name,code,n,total,promo)=>`¡Hola Te Amo Medellín! ${name?"Soy "+name+". ":""}Quiero hacer este pedido 💛\n\nVer mi pedido: ${code}\n\n(${n} ${n===1?"producto":"productos"} · total aproximado ${total}${promo?", antes de promos":""})\n\n¿Me confirman disponibilidad y entrega? Gracias`,
  pedLink:'Ver mi pedido con fotos:',pedCode:'Código del pedido',staffBtn:'Equipo Te Amo: ver un pedido con fotos',vTitle:'Pedido del cliente',vLabel:'Pega aquí el mensaje de WhatsApp o el código del pedido',vGo:'Ver pedido',vPaste:'Pegar y ver pedido',vBad:'No encontramos un código de pedido. Copia el mensaje completo del cliente.',vMiss:'Producto que ya no está en el catálogo',
  bizMsg:'¡Hola Te Amo Medellín! Quiero cotizar kits empresariales / compra al por mayor. ',
@@ -622,6 +629,7 @@ en:{
  shipH:'Delivery',ship1:'Pick up at either of our stores',ship2:'Home delivery in Medellín',ship3:'National and international shipping',ship4:'We confirm the shipping cost on WhatsApp.',
  msg:(name,lines,total,promo)=>`Hi Te Amo Medellín! ${name?"I'm "+name+". ":""}I would like to order:\n\n${lines}\n\nApproximate total: ${total} COP${promo?" (before deals)":""}\n\nCould you confirm availability and delivery? Thank you 💛`,
  rushH:'Leaving Medellín soon?',rushP:'Order today and we’ll bring it to your hotel or Airbnb, or pick it up at our store.',refL:'Referred by',
+ payNow:'Pay now with Bold',paySub:'Card, PSE, Nequi · store pickup',payWait:'Preparing your payment…',payErr:e=>'We could not start the payment: '+e+'. Send us your order on WhatsApp.',payOk:'Payment received! Send us your order on WhatsApp to arrange pickup.',payKo:'The payment was not completed. Try again or send us your order on WhatsApp.',paidLine:(id,amt)=>`💳 PAID with Bold · ref. ${id} · ${amt}`,
  msgShort:(name,code,n,total,promo)=>`Hi Te Amo Medellín! ${name?"I'm "+name+". ":""}I would like to place this order 💛\n\nSee my order: ${code}\n\n(${n} ${n===1?"item":"items"} · approximate total ${total} COP${promo?", before deals":""})\n\nCould you confirm availability and delivery? Thank you`,
  pedLink:'See my order with photos:',pedCode:'Order code',staffBtn:'Te Amo team: view an order with photos',vTitle:'Customer order',vLabel:'Paste the WhatsApp message or the order code here',vGo:'View order',vPaste:'Paste & view order',vBad:'No order code found. Copy the full customer message.',vMiss:'Product no longer in the catalog',
  bizMsg:'Hi Te Amo Medellín! I would like a quote for corporate kits / wholesale. ',
@@ -818,7 +826,7 @@ function orderText(){
   const code=cartCode();
   let n=0;cart.forEach(q=>n+=q);
   const ref=getRef();
-  return t("msgShort")(name,`${SHARE_URL}#pedido=${code}`,n,fmt(total),[...cart.keys()].some(id=>OPT[pid(id)].p.promo))+(ref?`\n\n📍 ${t("refL")}: ${ref}`:"");
+  return t("msgShort")(name,`${SHARE_URL}#pedido=${code}`,n,fmt(total),[...cart.keys()].some(id=>OPT[pid(id)].p.promo))+(PAID?`\n\n${t("paidLine")(PAID.id,fmt(PAID.amount))}`:"")+(ref?`\n\n📍 ${t("refL")}: ${ref}`:"");
 }
 function refName(r){return String(r).replace(/[^\p{L}\p{N}\- _]/gu,"").slice(0,40).replace(/[-_]+/g," ").trim().replace(/\b\p{L}/gu,c=>c.toUpperCase())}
 (function(){try{const u=new URLSearchParams(location.search).get("ref")||(location.hash.match(/ref=([^&]+)/)||[])[1];if(u){const n=refName(decodeURIComponent(u));if(n)localStorage.setItem("tam_ref",JSON.stringify({n,t:Date.now()}))}}catch(_){}})();
@@ -851,11 +859,32 @@ function renderOrder(){
   document.getElementById("sTotal").textContent=fmt(total);
   document.getElementById("promoNote").hidden=![...cart.keys()].some(id=>OPT[pid(id)].p.promo);
   document.getElementById("lines").innerHTML=[...cart].map(([id,q])=>{const o=OPT[pid(id)].o;const th=thumbOf(id);return `<div class="line">${th?`<img class="lth" src="${th}" alt="">`:""}<div class="ln">${esc(lineName(id))}<div class="lp">${fmt(o.price)} ${t("each")} · ${fmt(o.price*q)}</div></div><span>${controlHTML(id)}</span></div>`}).join("");
+  document.getElementById("payBold").hidden=!(PAY.worker&&PAY.apiKey)||n===0||!!PAID;
   updateWa(); if(n===0) closeSheet();
 }
 document.getElementById("lines").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
   if(b.dataset.inc) setQty(b.dataset.inc,(cart.get(b.dataset.inc)||0)+1);
   if(b.dataset.dec) setQty(b.dataset.dec,(cart.get(b.dataset.dec)||0)-1);});
+const PAY_TEST=(()=>{try{const v=new URLSearchParams(location.search).get("pruebas");if(v==="1")localStorage.setItem("tam_pruebas","1");if(v==="0")localStorage.removeItem("tam_pruebas");return localStorage.getItem("tam_pruebas")==="1"}catch(_){return false}})();
+const PAY={apiKey:"SKBHgdUSlIJaN3iABDkbDrCql94VoiEgTLKUZAR6a8o",worker:PAY_TEST?"https://teamo-pagos.valentinateamomedellin.workers.dev":""};
+let PAID=null;
+function boldLoad(){return new Promise((ok,ko)=>{if(window.BoldCheckout)return ok();const s=document.createElement("script");s.src="https://checkout.bold.co/library/boldPaymentButton.js";s.onload=()=>ok();s.onerror=()=>ko(new Error("Bold"));document.head.appendChild(s)})}
+function payShow(m){const p=document.getElementById("payMsg");p.hidden=!m;p.textContent=m||""}
+document.getElementById("payBold").onclick=async()=>{
+  const btn=document.getElementById("payBold");btn.disabled=true;payShow(t("payWait"));
+  try{const items=[...cart].map(([k,q])=>({id:pid(k),q}));
+    const r=await fetch(PAY.worker,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items})});const d=await r.json();if(!r.ok||d.error)throw new Error(d.error||r.status);
+    try{localStorage.setItem("tam_paycart",JSON.stringify({cart:[...cart],orderId:d.orderId,amount:d.amount,t:Date.now()}))}catch(_){}
+    await boldLoad();
+    const ck=new BoldCheckout({orderId:d.orderId,currency:"COP",amount:String(d.amount),apiKey:PAY.apiKey,integritySignature:d.signature,description:"Pedido Te Amo Medellín",redirectionUrl:SHARE_URL});
+    payShow("");ck.open();
+  }catch(e){payShow(t("payErr")(e.message||e))}finally{btn.disabled=false}};
+(function payReturn(){try{const u=new URLSearchParams(location.search);const id=u.get("bold-order-id"),st=(u.get("bold-tx-status")||"").toLowerCase();if(!id)return;
+  const saved=JSON.parse(localStorage.getItem("tam_paycart")||"null");
+  window.addEventListener("tam-ready",()=>{if(saved&&saved.orderId===id){cart.clear();saved.cart.forEach(([k,q])=>cart.set(k,q));renderOrder()}
+    if(st==="approved"&&saved){PAID={id,amount:saved.amount};try{localStorage.removeItem("tam_paycart")}catch(_){}updateWa();openSheet();payShow(t("payOk"))}
+    else{openSheet();payShow(t("payKo"))}
+    history.replaceState(null,"",location.pathname)},{once:true})}catch(_){}})();
 function updateWa(){document.getElementById("wa").href="https://wa.me/"+String(CONFIG.whatsapp).replace(/\D/g,"")+"?text="+encodeURIComponent(orderText())}
 document.getElementById("cname").addEventListener("input",updateWa);
 const sheet=document.getElementById("sheet"),scrim=document.getElementById("scrim");
@@ -873,7 +902,7 @@ applyStatic();renderPaisa();
 fetch("catalogo.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
   DATA=d; CONFIG={whatsapp:d.whatsapp,updated:d.updated};
   d.products.forEach(p=>p.options.forEach(o=>OPT[o.id]={p,o}));
-  applyStatic(); renderChips(); renderList(); renderOrder(); checkHash(); renderPromos();
+  applyStatic(); renderChips(); renderList(); renderOrder(); checkHash(); renderPromos(); window.dispatchEvent(new Event("tam-ready"));
   try{const ks=(d.top||[]).concat(d.products.map(p=>p.key));const seen=new Set();const ph=[];for(const k of ks){const p=d.products.find(x=>x.key===k);if(!p||seen.has(k)||!p.photos.length||!avail(p).length)continue;seen.add(k);ph.push(p.photos[0]);if(ph.length>=10)break}
     const h=ph.map(u=>`<img src="${u}" alt="" loading="eager">`).join("");const st=document.getElementById("strip");if(st)st.innerHTML=h+h}catch(_){}
 }).catch(()=>{document.getElementById("list").innerHTML=`<p class="empty">${t("loadErr")}</p>`});
