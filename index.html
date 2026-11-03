@@ -445,6 +445,28 @@ html,body{overflow-x:clip}
 .paybtn small{font-weight:500;font-size:12px;opacity:.75}
 .paybtn:hover{background:var(--red)}.paybtn:disabled{opacity:.6;cursor:wait}
 .paynote{text-align:center;color:var(--green);font-weight:600;margin:0}
+.checkout{z-index:33}#coScrim{z-index:32}
+.coform{overflow-y:auto;flex:1;min-height:0;padding-bottom:6px}
+.coform fieldset{border:0;padding:0;margin:0 0 14px}
+.coform legend{font-family:var(--f-display);font-weight:800;font-size:16px;margin-bottom:8px}
+.coform label{display:grid;gap:4px;margin-bottom:10px;font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+.coform input,.coform select,.coform textarea{border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font:16px var(--f-body);background:var(--white);color:var(--ink);text-transform:none;letter-spacing:0;width:100%;box-sizing:border-box}
+.coform input:focus,.coform select:focus,.coform textarea:focus{outline:none;border-color:var(--ink)}
+.coform .bad{border-color:var(--red);background:#fff2f1}
+.co2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.co2 label{margin-bottom:10px}
+.opt-r{display:flex !important;grid-template-columns:none !important;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:14px;padding:11px 12px;cursor:pointer;text-transform:none !important;letter-spacing:0 !important;color:var(--ink) !important;margin-bottom:8px !important}
+.opt-r input{width:auto;accent-color:var(--red)}
+.opt-r span{display:flex;flex:1;justify-content:space-between;gap:8px;font-size:15px}
+.opt-r small{color:var(--muted);font-weight:600;font-size:13px;text-align:right}
+.opt-r:has(input:checked){border-color:var(--ink);background:#fffbea}
+.co-intl{background:#fffbea;border:1.5px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:12px}
+.co-intl p{margin:0;font-size:14px}
+.co-sum{border-top:1.5px solid var(--line);padding-top:10px;margin-top:4px;display:grid;gap:4px}
+.co-sum div{display:flex;justify-content:space-between;font-size:14px}
+.co-sum .tot{font-size:17px;font-weight:700}.co-sum .tot b{font-family:var(--f-display);font-size:22px}
+.co-err{color:var(--red);font-weight:600;font-size:13px;margin:6px 0}
+@media (max-width:420px){.co2{grid-template-columns:1fr}}
 </style>
 
 <div class="announce" aria-live="polite"><span id="annTxt">Domicilios en Medellín · Envíos nacionales e internacionales</span></div>
@@ -568,6 +590,44 @@ html,body{overflow-x:clip}
   </div>
 </section>
 <div class="scrim" id="vscrim" hidden></div>
+<div class="scrim" id="coScrim" hidden></div>
+<section class="sheet checkout" id="checkout" hidden role="dialog" aria-modal="true" aria-labelledby="coTitle">
+  <header><h2 id="coTitle" data-i18n="coTitle">Datos de entrega</h2><button class="icon-btn" id="coClose" type="button" aria-label="Cerrar">×</button></header>
+  <form id="coForm" class="coform" novalidate>
+    <fieldset><legend data-i18n="coHow">¿Cómo quieres recibirlo?</legend>
+      <label class="opt-r"><input type="radio" name="tipo" value="medellin" checked><span><b data-i18n="coMed">Domicilio en Medellín</b><small>+ $15.000</small></span></label>
+      <label class="opt-r"><input type="radio" name="tipo" value="nacional"><span><b data-i18n="coNac">Envío nacional</b><small>+ $18.000</small></span></label>
+      <label class="opt-r"><input type="radio" name="tipo" value="tienda"><span><b data-i18n="coStore">Recoger en tienda</b><small data-i18n="coFree">Gratis</small></span></label>
+      <label class="opt-r"><input type="radio" name="tipo" value="intl"><span><b data-i18n="coIntl">Envío internacional</b><small data-i18n="coIntlS">Cotiza por WhatsApp</small></span></label>
+    </fieldset>
+    <div id="coIntlBox" class="co-intl" hidden><p data-i18n="coIntlP">Para envíos fuera de Colombia primero revisamos que tus productos se puedan enviar a tu país. Envíanos el pedido por WhatsApp y te cotizamos.</p><a class="wa" id="coIntlWa" href="#" target="_blank" rel="noopener" data-i18n="send">Enviar pedido por WhatsApp</a></div>
+    <div id="coMain">
+      <fieldset><legend data-i18n="coYou">Tus datos</legend>
+        <label><span data-i18n="coName">Nombre completo</span><input name="nombre" autocomplete="name" required></label>
+        <div class="co2"><label><span data-i18n="coDocT">Documento</span><select name="tipoDoc"><option>CC</option><option>CE</option><option value="PP">Pasaporte</option><option>NIT</option></select></label>
+        <label><span data-i18n="coDoc">Número</span><input name="doc" inputmode="numeric" required></label></div>
+        <div class="co2"><label><span data-i18n="coCel">Celular / WhatsApp</span><input name="cel" type="tel" autocomplete="tel" required></label>
+        <label><span data-i18n="coMail">Correo</span><input name="correo" type="email" autocomplete="email" required></label></div>
+      </fieldset>
+      <fieldset id="coAddr"><legend data-i18n="coWhere">Dirección de entrega</legend>
+        <label><span data-i18n="coDir">Dirección</span><input name="dir" autocomplete="street-address" placeholder="Cra 43A #1-50"></label>
+        <label><span data-i18n="coDet">Apto, hotel o indicaciones</span><input name="detalle" placeholder="Hotel, habitación, torre…"></label>
+        <div class="co2"><label id="coBarrioL"><span data-i18n="coBarrio">Barrio</span><input name="barrio"></label>
+        <label id="coCityL" hidden><span data-i18n="coCity">Ciudad</span><input name="ciudad" autocomplete="address-level2"></label></div>
+        <label id="coDeptL" hidden><span data-i18n="coDept">Departamento</span><input name="depto" autocomplete="address-level1"></label>
+      </fieldset>
+      <fieldset id="coShop" hidden><legend data-i18n="coWhich">¿En cuál tienda?</legend>
+        <label class="opt-r"><input type="radio" name="tienda" value="calle10" checked><span><b>Calle 10</b><small>Calle 10 #37-41, El Poblado</small></span></label>
+        <label class="opt-r"><input type="radio" name="tienda" value="manila"><span><b>Manila</b><small>Calle 13 #43D-27, Manila</small></span></label>
+      </fieldset>
+      <label><span data-i18n="coNotes">Notas (opcional)</span><textarea name="notas" rows="2"></textarea></label>
+      <div class="co-sum"><div><span data-i18n="coSub">Productos</span><b id="coSub"></b></div><div><span data-i18n="coShip">Envío</span><b id="coShipV"></b></div><div class="tot"><span>Total</span><b id="coTot"></b></div></div>
+      <p class="note" data-i18n="coNote">Si algún producto se agotó, te devolvemos el valor o te ofrecemos otro diseño.</p>
+      <p class="co-err" id="coErr" hidden></p>
+      <button type="submit" class="paybtn" id="coPay"><span data-i18n="coPay">Pagar con Bold</span><small data-i18n="paySubX">Tarjeta, PSE, Nequi o Botón Bancolombia</small></button>
+    </div>
+  </form>
+</section>
 <section class="sheet viewer" id="viewer" hidden role="dialog" aria-modal="true" aria-labelledby="vTitle">
   <header><h2 id="vTitle" data-i18n="vTitle">Pedido del cliente</h2><button class="icon-btn" id="vClose" type="button" aria-label="Cerrar">×</button></header>
   <div class="vpaste"><label for="vIn" data-i18n="vLabel">Pega aquí el mensaje de WhatsApp o el código del pedido</label><textarea id="vIn" rows="3" placeholder="TAM-..."></textarea><div class="vbtns"><button class="btn" id="vPaste" type="button" data-i18n="vPaste">Pegar y ver pedido</button><button class="btn alt" id="vGo" type="button" data-i18n="vGo">Ver pedido</button></div></div>
@@ -601,7 +661,8 @@ const T={es:{
  shipH:'Entregas',ship1:'Recoge en cualquiera de nuestras tiendas',ship2:'Domicilios en Medellín',ship3:'Envíos nacionales e internacionales',ship4:'El costo del envío te lo confirmamos por WhatsApp.',
  msg:(name,lines,total,promo)=>`¡Hola Te Amo Medellín! ${name?"Soy "+name+". ":""}Quiero hacer este pedido:\n\n${lines}\n\nTotal aproximado: ${total}${promo?" (antes de promos)":""}\n\n¿Me confirman disponibilidad y entrega? Gracias 💛`,
  rushH:'¿Te vas pronto de Medellín?',rushP:'Pide hoy y te lo llevamos a tu hotel o Airbnb, o recógelo en nuestra tienda.',refL:'Vengo de',
- payNow:'Pagar ahora con Bold',paySub:'Tarjeta, PSE, Nequi · recoge en tienda',payWait:'Preparando tu pago…',payErr:e=>'No pudimos iniciar el pago: '+e+'. Envíanos el pedido por WhatsApp.',payOk:'¡Pago recibido! Envíanos el pedido por WhatsApp para coordinar la entrega.',payKo:'El pago no se completó. Puedes intentarlo de nuevo o enviarnos el pedido por WhatsApp.',paidLine:(id,amt)=>`💳 PAGADO con Bold · ref. ${id} · ${amt}`,
+ coTitle:'Datos de entrega',coHow:'¿Cómo quieres recibirlo?',coMed:'Domicilio en Medellín',coNac:'Envío nacional',coStore:'Recoger en tienda',coFree:'Gratis',coIntl:'Envío internacional',coIntlS:'Cotiza por WhatsApp',coIntlP:'Para envíos fuera de Colombia primero revisamos que tus productos se puedan enviar a tu país. Envíanos el pedido por WhatsApp y te cotizamos.',coYou:'Tus datos',coName:'Nombre completo',coDocT:'Documento',coDoc:'Número',coCel:'Celular / WhatsApp',coMail:'Correo',coWhere:'Dirección de entrega',coDir:'Dirección',coDet:'Apto, hotel o indicaciones',coBarrio:'Barrio',coCity:'Ciudad',coDept:'Departamento',coWhich:'¿En cuál tienda?',coNotes:'Notas (opcional)',coSub:'Productos',coShip:'Envío',coNote:'Si algún producto se agotó, te devolvemos el valor o te ofrecemos otro diseño.',coPay:'Pagar con Bold',paySubX:'Tarjeta, PSE, Nequi o Botón Bancolombia',coMiss:'Revisa los campos marcados.',coDone:id=>`¡Pedido confirmado! Tu número es ${id}. Te contactaremos por WhatsApp para coordinar la entrega.`,coCheck:'Confirmando tu pago…',
+ payNow:'Pagar ahora con Bold',paySub:'Tarjeta, PSE, Nequi · domicilio o recoge en tienda',payWait:'Preparando tu pago…',payErr:e=>'No pudimos iniciar el pago: '+e+'. Envíanos el pedido por WhatsApp.',payOk:'¡Pago recibido! Envíanos el pedido por WhatsApp para coordinar la entrega.',payKo:'El pago no se completó. Puedes intentarlo de nuevo o enviarnos el pedido por WhatsApp.',paidLine:(id,amt)=>`💳 PAGADO con Bold · ref. ${id} · ${amt}`,
  msgShort:(name,code,n,total,promo)=>`¡Hola Te Amo Medellín! ${name?"Soy "+name+". ":""}Quiero hacer este pedido 💛\n\nVer mi pedido: ${code}\n\n(${n} ${n===1?"producto":"productos"} · total aproximado ${total}${promo?", antes de promos":""})\n\n¿Me confirman disponibilidad y entrega? Gracias`,
  pedLink:'Ver mi pedido con fotos:',pedCode:'Código del pedido',staffBtn:'Equipo Te Amo: ver un pedido con fotos',vTitle:'Pedido del cliente',vLabel:'Pega aquí el mensaje de WhatsApp o el código del pedido',vGo:'Ver pedido',vPaste:'Pegar y ver pedido',vBad:'No encontramos un código de pedido. Copia el mensaje completo del cliente.',vMiss:'Producto que ya no está en el catálogo',
  bizMsg:'¡Hola Te Amo Medellín! Quiero cotizar kits empresariales / compra al por mayor. ',
@@ -629,7 +690,8 @@ en:{
  shipH:'Delivery',ship1:'Pick up at either of our stores',ship2:'Home delivery in Medellín',ship3:'National and international shipping',ship4:'We confirm the shipping cost on WhatsApp.',
  msg:(name,lines,total,promo)=>`Hi Te Amo Medellín! ${name?"I'm "+name+". ":""}I would like to order:\n\n${lines}\n\nApproximate total: ${total} COP${promo?" (before deals)":""}\n\nCould you confirm availability and delivery? Thank you 💛`,
  rushH:'Leaving Medellín soon?',rushP:'Order today and we’ll bring it to your hotel or Airbnb, or pick it up at our store.',refL:'Referred by',
- payNow:'Pay now with Bold',paySub:'Card, PSE, Nequi · store pickup',payWait:'Preparing your payment…',payErr:e=>'We could not start the payment: '+e+'. Send us your order on WhatsApp.',payOk:'Payment received! Send us your order on WhatsApp to arrange pickup.',payKo:'The payment was not completed. Try again or send us your order on WhatsApp.',paidLine:(id,amt)=>`💳 PAID with Bold · ref. ${id} · ${amt}`,
+ coTitle:'Delivery details',coHow:'How do you want to receive it?',coMed:'Delivery in Medellín',coNac:'Shipping in Colombia',coStore:'Store pickup',coFree:'Free',coIntl:'International shipping',coIntlS:'Quote on WhatsApp',coIntlP:'For shipping outside Colombia we first check that your products can be sent to your country. Send us your order on WhatsApp and we will quote it.',coYou:'Your details',coName:'Full name',coDocT:'ID type',coDoc:'ID number',coCel:'Mobile / WhatsApp',coMail:'Email',coWhere:'Delivery address',coDir:'Address',coDet:'Apt, hotel or directions',coBarrio:'Neighborhood',coCity:'City',coDept:'State / department',coWhich:'Which store?',coNotes:'Notes (optional)',coSub:'Products',coShip:'Shipping',coNote:'If an item sold out, we refund it or offer you another design.',coPay:'Pay with Bold',paySubX:'Card, PSE, Nequi or Bancolombia',coMiss:'Please check the highlighted fields.',coDone:id=>`Order confirmed! Your number is ${id}. We will contact you on WhatsApp to arrange delivery.`,coCheck:'Confirming your payment…',
+ payNow:'Pay now with Bold',paySub:'Card, PSE, Nequi · delivery or store pickup',payWait:'Preparing your payment…',payErr:e=>'We could not start the payment: '+e+'. Send us your order on WhatsApp.',payOk:'Payment received! Send us your order on WhatsApp to arrange pickup.',payKo:'The payment was not completed. Try again or send us your order on WhatsApp.',paidLine:(id,amt)=>`💳 PAID with Bold · ref. ${id} · ${amt}`,
  msgShort:(name,code,n,total,promo)=>`Hi Te Amo Medellín! ${name?"I'm "+name+". ":""}I would like to place this order 💛\n\nSee my order: ${code}\n\n(${n} ${n===1?"item":"items"} · approximate total ${total} COP${promo?", before deals":""})\n\nCould you confirm availability and delivery? Thank you`,
  pedLink:'See my order with photos:',pedCode:'Order code',staffBtn:'Te Amo team: view an order with photos',vTitle:'Customer order',vLabel:'Paste the WhatsApp message or the order code here',vGo:'View order',vPaste:'Paste & view order',vBad:'No order code found. Copy the full customer message.',vMiss:'Product no longer in the catalog',
  bizMsg:'Hi Te Amo Medellín! I would like a quote for corporate kits / wholesale. ',
@@ -860,7 +922,7 @@ function renderOrder(){
   document.getElementById("promoNote").hidden=![...cart.keys()].some(id=>OPT[pid(id)].p.promo);
   document.getElementById("lines").innerHTML=[...cart].map(([id,q])=>{const o=OPT[pid(id)].o;const th=thumbOf(id);return `<div class="line">${th?`<img class="lth" src="${th}" alt="">`:""}<div class="ln">${esc(lineName(id))}<div class="lp">${fmt(o.price)} ${t("each")} · ${fmt(o.price*q)}</div></div><span>${controlHTML(id)}</span></div>`}).join("");
   document.getElementById("payBold").hidden=!(PAY.worker&&PAY.apiKey)||n===0||!!PAID;
-  updateWa(); if(n===0) closeSheet();
+  updateWa(); if(n===0&&!PAID) closeSheet();
 }
 document.getElementById("lines").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
   if(b.dataset.inc) setQty(b.dataset.inc,(cart.get(b.dataset.inc)||0)+1);
@@ -870,21 +932,47 @@ const PAY={apiKey:"SKBHgdUSlIJaN3iABDkbDrCql94VoiEgTLKUZAR6a8o",worker:PAY_TEST?
 let PAID=null;
 function boldLoad(){return new Promise((ok,ko)=>{if(window.BoldCheckout)return ok();const s=document.createElement("script");s.src="https://checkout.bold.co/library/boldPaymentButton.js";s.onload=()=>ok();s.onerror=()=>ko(new Error("Bold"));document.head.appendChild(s)})}
 function payShow(m){const p=document.getElementById("payMsg");p.hidden=!m;p.textContent=m||""}
-document.getElementById("payBold").onclick=async()=>{
-  const btn=document.getElementById("payBold");btn.disabled=true;payShow(t("payWait"));
-  try{const items=[...cart].map(([k,q])=>({id:pid(k),q}));
-    const r=await fetch(PAY.worker,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items})});const d=await r.json();if(!r.ok||d.error)throw new Error(d.error||r.status);
+const SHIP={medellin:15000,nacional:18000,tienda:0};
+const co=document.getElementById("checkout"),coScrim=document.getElementById("coScrim"),coF=document.getElementById("coForm");
+function cartSub(){let sub=0;const byP={};cart.forEach((q,k)=>{const {p,o}=OPT[pid(k)];(byP[p.key]=byP[p.key]||{p,q:0,base:0,unit:o.price}).q+=q;byP[p.key].base+=q*o.price});
+  Object.values(byP).forEach(({p,q,base,unit})=>{const m=String(p.promo||"").match(/(\d+)\s*x\s*\$?\s*([\d.]+)/i);sub+=m?Math.floor(q/+m[1])*+m[2].replace(/\./g,"")+(q%+m[1])*unit:base});return sub}
+function coUpdate(){const tipo=coF.tipo.value;const intl=tipo==="intl";
+  document.getElementById("coIntlBox").hidden=!intl;document.getElementById("coMain").hidden=intl;
+  document.getElementById("coAddr").hidden=tipo==="tienda";document.getElementById("coShop").hidden=tipo!=="tienda";
+  document.getElementById("coCityL").hidden=tipo!=="nacional";document.getElementById("coDeptL").hidden=tipo!=="nacional";document.getElementById("coBarrioL").hidden=tipo==="nacional";
+  const sub=cartSub(),sh=SHIP[tipo]||0;document.getElementById("coSub").textContent=fmt(sub);document.getElementById("coShipV").textContent=sh?fmt(sh):t("coFree");document.getElementById("coTot").textContent=fmt(sub+sh);
+  document.getElementById("coIntlWa").href=waLink(orderText()+"\n\n🌎 Envío internacional")}
+coF.addEventListener("change",coUpdate);
+function openCo(){closeSheet();try{const sv=JSON.parse(localStorage.getItem("tam_cliente")||"null");if(sv)for(const k in sv)if(coF[k]&&!coF[k].value&&coF[k].type!=="radio")coF[k].value=sv[k]}catch(_){}coUpdate();co.hidden=false;coScrim.hidden=false;document.getElementById("coClose").focus()}
+function closeCo(){co.hidden=true;coScrim.hidden=true}
+document.getElementById("coClose").onclick=closeCo;coScrim.onclick=closeCo;
+document.getElementById("payBold").onclick=openCo;
+function coErr(m){const e=document.getElementById("coErr");e.hidden=!m;e.textContent=m||""}
+coF.addEventListener("submit",async ev=>{ev.preventDefault();const tipo=coF.tipo.value;if(tipo==="intl")return;
+  const need=["nombre","doc","cel","correo"].concat(tipo==="tienda"?[]:["dir"]).concat(tipo==="nacional"?["ciudad","depto"]:tipo==="medellin"?["barrio"]:[]);
+  let bad=false;need.forEach(n=>{const el=coF[n];const ok=el.value.trim()&&(n!=="correo"||/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value.trim()));el.classList.toggle("bad",!ok);if(!ok)bad=true});
+  if(bad){coErr(t("coMiss"));return}
+  const v=n=>coF[n].value.trim();const cliente={nombre:v("nombre"),tipoDoc:coF.tipoDoc.value,doc:v("doc"),cel:v("cel"),correo:v("correo")};
+  const entrega={tipo,tienda:tipo==="tienda"?coF.tienda.value:"",dir:v("dir"),detalle:v("detalle"),barrio:v("barrio"),ciudad:tipo==="medellin"?"Medellín":v("ciudad"),depto:tipo==="medellin"?"Antioquia":v("depto"),notas:v("notas")};
+  try{localStorage.setItem("tam_cliente",JSON.stringify({nombre:cliente.nombre,doc:cliente.doc,cel:cliente.cel,correo:cliente.correo,dir:entrega.dir,detalle:entrega.detalle,barrio:entrega.barrio}))}catch(_){}
+  const btn=document.getElementById("coPay");btn.disabled=true;coErr("");
+  try{const items=[...cart].map(([k,q])=>({id:pid(k),q,d:pdx(k)}));
+    const r=await fetch(PAY.worker,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items,cliente,entrega,ref:getRef()})});const d=await r.json();if(!r.ok||d.error)throw new Error(d.error||r.status);
     try{localStorage.setItem("tam_paycart",JSON.stringify({cart:[...cart],orderId:d.orderId,amount:d.amount,t:Date.now()}))}catch(_){}
     await boldLoad();
-    const ck=new BoldCheckout({orderId:d.orderId,currency:"COP",amount:String(d.amount),apiKey:PAY.apiKey,integritySignature:d.signature,description:"Pedido Te Amo Medellín",redirectionUrl:SHARE_URL});
-    payShow("");ck.open();
-  }catch(e){payShow(t("payErr")(e.message||e))}finally{btn.disabled=false}};
+    const dt={PP:"PP",CC:"CC",CE:"CE",NIT:"NIT"}[cliente.tipoDoc]||"CC";
+    const ck=new BoldCheckout({orderId:d.orderId,currency:"COP",amount:String(d.amount),apiKey:PAY.apiKey,integritySignature:d.signature,description:"Pedido Te Amo Medellín "+d.orderId,redirectionUrl:SHARE_URL,
+      customerData:JSON.stringify({email:cliente.correo,fullName:cliente.nombre,phone:cliente.cel.replace(/\D/g,"").slice(-10),dialCode:"+57",documentNumber:cliente.doc,documentType:dt})});
+    ck.open();
+  }catch(e){coErr(t("payErr")(e.message||e))}finally{btn.disabled=false}});
 (function payReturn(){try{const u=new URLSearchParams(location.search);const id=u.get("bold-order-id"),st=(u.get("bold-tx-status")||"").toLowerCase();if(!id)return;
   const saved=JSON.parse(localStorage.getItem("tam_paycart")||"null");
-  window.addEventListener("tam-ready",()=>{if(saved&&saved.orderId===id){cart.clear();saved.cart.forEach(([k,q])=>cart.set(k,q));renderOrder()}
-    if(st==="approved"&&saved){PAID={id,amount:saved.amount};try{localStorage.removeItem("tam_paycart")}catch(_){}updateWa();openSheet();payShow(t("payOk"))}
-    else{openSheet();payShow(t("payKo"))}
-    history.replaceState(null,"",location.pathname)},{once:true})}catch(_){}})();
+  window.addEventListener("tam-ready",async()=>{history.replaceState(null,"",location.pathname);
+    if(st==="approved"||st==="pending"||st==="processing"){openSheet();payShow(t("coCheck"));
+      let estado="";for(let i=0;i<4&&estado!=="APPROVED";i++){try{const r=await fetch(PAY.worker+"/confirmar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({orderId:id})});estado=(await r.json()).estado}catch(_){}if(estado!=="APPROVED")await new Promise(r=>setTimeout(r,3000))}
+      cart.clear();renderOrder();try{localStorage.removeItem("tam_paycart")}catch(_){}
+      openSheet();payShow(t("coDone")(id));PAID={id,amount:saved?saved.amount:0}}
+    else{if(saved&&saved.orderId===id){cart.clear();saved.cart.forEach(([k,q])=>cart.set(k,q));renderOrder()}openSheet();payShow(t("payKo"))}},{once:true})}catch(_){}})();
 function updateWa(){document.getElementById("wa").href="https://wa.me/"+String(CONFIG.whatsapp).replace(/\D/g,"")+"?text="+encodeURIComponent(orderText())}
 document.getElementById("cname").addEventListener("input",updateWa);
 const sheet=document.getElementById("sheet"),scrim=document.getElementById("scrim");
