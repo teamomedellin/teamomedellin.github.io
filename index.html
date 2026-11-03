@@ -928,7 +928,7 @@ document.getElementById("lines").addEventListener("click",e=>{const b=e.target.c
   if(b.dataset.inc) setQty(b.dataset.inc,(cart.get(b.dataset.inc)||0)+1);
   if(b.dataset.dec) setQty(b.dataset.dec,(cart.get(b.dataset.dec)||0)-1);});
 const PAY_TEST=(()=>{try{const v=new URLSearchParams(location.search).get("pruebas");if(v==="1")localStorage.setItem("tam_pruebas","1");if(v==="0")localStorage.removeItem("tam_pruebas");return localStorage.getItem("tam_pruebas")==="1"}catch(_){return false}})();
-const PAY={apiKey:"SKBHgdUSlIJaN3iABDkbDrCql94VoiEgTLKUZAR6a8o",worker:PAY_TEST?"https://teamo-pagos.valentinateamomedellin.workers.dev":""};
+const PAY={apiKey:"NTFQWI02n1FgvHKGIg8CLMLZ2S1bw7rgwYbZ2_nhLcs",worker:"https://teamo-pagos.valentinateamomedellin.workers.dev"};
 let PAID=null;
 function boldLoad(){return new Promise((ok,ko)=>{if(window.BoldCheckout)return ok();const s=document.createElement("script");s.src="https://checkout.bold.co/library/boldPaymentButton.js";s.onload=()=>ok();s.onerror=()=>ko(new Error("Bold"));document.head.appendChild(s)})}
 function payShow(m){const p=document.getElementById("payMsg");p.hidden=!m;p.textContent=m||""}
