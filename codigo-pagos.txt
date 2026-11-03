@@ -1,0 +1,177 @@
+// Te Amo Medellín · Pagos con Bold + pedidos
+// Variables en Cloudflare (Settings → Variables and Secrets):
+//   BOLD_SECRET  (Secret)  llave secreta de Bold (pruebas o producción)
+//   MODO         (Text)    "pruebas" o "produccion"
+//   PANEL_PIN    (Secret)  clave para ver el panel de pedidos
+//   NTFY_TOPIC   (Text)    canal de notificaciones en la app ntfy
+// Binding (Settings → Bindings): KV namespace con nombre de variable PEDIDOS
+const SITIO = "https://teamomedellin.github.io";
+const CATALOGO = SITIO + "/catalogo.json";
+const LLAVES = { pruebas: "SKBHgdUSlIJaN3iABDkbDrCql94VoiEgTLKUZAR6a8o", produccion: "NTFQWI02n1FgvHKGIg8CLMLZ2S1bw7rgwYbZ2_nhLcs" };
+const ENVIO = { tienda: 0, medellin: 15000, nacional: 18000 };
+const TIENDAS = { calle10: "Calle 10 #37-41, El Poblado", manila: "Calle 13 #43D-27, Manila" };
+const fmt = n => "$" + Math.round(n).toLocaleString("es-CO");
+
+function cors(origin) {
+  let ok = false;
+  try { const h = new URL(origin).hostname; ok = origin === SITIO || /(^|\.)claudeusercontent\.com$|(^|\.)claude\.ai$/.test(h); } catch (_) {}
+  return { "Access-Control-Allow-Origin": ok ? origin : SITIO, "Access-Control-Allow-Methods": "GET, POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Vary": "Origin" };
+}
+const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+async function sha256(t) { return hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t))); }
+async function hmac(key, t) {
+  const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(key || "\0"), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  return hex(await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(t)));
+}
+const clean = (s, n = 120) => String(s ?? "").replace(/[<>]/g, "").trim().slice(0, n);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+async function crearPedido(body, env) {
+  const { items, cliente = {}, entrega = {}, ref } = body;
+  if (!Array.isArray(items) || !items.length || items.length > 60) throw new Error("pedido vacío");
+  const tipo = entrega.tipo;
+  if (!(tipo in ENVIO)) throw new Error("tipo de entrega no válido");
+  const c = { nombre: clean(cliente.nombre, 80), tipoDoc: clean(cliente.tipoDoc, 4), doc: clean(cliente.doc, 20), cel: clean(cliente.cel, 20), correo: clean(cliente.correo, 80) };
+  if (!c.nombre || !c.doc || !c.cel || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c.correo)) throw new Error("faltan datos del cliente");
+  const e = { tipo, tienda: clean(entrega.tienda, 10), dir: clean(entrega.dir, 120), detalle: clean(entrega.detalle, 80), barrio: clean(entrega.barrio, 60), ciudad: clean(entrega.ciudad, 60), depto: clean(entrega.depto, 60), notas: clean(entrega.notas, 200) };
+  if (tipo === "tienda" && !(e.tienda in TIENDAS)) throw new Error("elige la tienda");
+  if (tipo !== "tienda" && !e.dir) throw new Error("falta la dirección");
+  if (tipo === "nacional" && (!e.ciudad || !e.depto)) throw new Error("falta ciudad o departamento");
+
+  const cat = await (await fetch(CATALOGO, { cf: { cacheTtl: 300 } })).json();
+  const opt = {};
+  for (const p of cat.products) for (const o of p.options) opt[o.id] = { p, o };
+  const porProd = {}, lineas = [];
+  for (const it of items) {
+    const x = opt[String(it.id)], q = Math.floor(Number(it.q));
+    if (!x || !(q > 0) || q > 50) throw new Error("producto no válido");
+    const d = Number.isInteger(it.d) && it.d >= 0 && it.d < x.p.photos.length ? it.d : (typeof x.o.ph === "number" ? x.o.ph : 0);
+    lineas.push({ id: x.o.id, nombre: x.p.name, opcion: x.o.label || "", diseno: x.p.photos.length > 1 ? d + 1 : null, foto: x.p.photos[d] ? SITIO + "/" + x.p.photos[d] : "", q, precio: x.o.price });
+    const k = x.p.key; (porProd[k] = porProd[k] || { p: x.p, l: [] }).l.push({ precio: x.o.price, q, max: x.o.q });
+  }
+  for (const { p, l } of Object.values(porProd)) {
+    const qTot = l.reduce((a, b) => a + b.q, 0);
+    if (l.some(b => b.q > b.max)) throw new Error("sin existencias suficientes: " + p.name);
+  }
+  let sub = 0;
+  for (const { p, l } of Object.values(porProd)) {
+    const qTot = l.reduce((a, b) => a + b.q, 0), base = l.reduce((a, b) => a + b.q * b.precio, 0);
+    const m = String(p.promo || "").match(/(\d+)\s*x\s*\$?\s*([\d.]+)/i);
+    sub += m ? Math.floor(qTot / +m[1]) * +m[2].replace(/\./g, "") + (qTot % +m[1]) * l[0].precio : base;
+  }
+  const envio = ENVIO[tipo], total = sub + envio;
+  const orderId = "TAM-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).slice(2, 6).toUpperCase();
+  const signature = await sha256(orderId + total + "COP" + env.BOLD_SECRET);
+  const pedido = { orderId, creado: new Date().toISOString(), estado: "sin pagar", modo: env.MODO || "pruebas", cliente: c, entrega: e, lineas, subtotal: sub, envio, total, ref: clean(ref, 40) };
+  if (env.PEDIDOS) await env.PEDIDOS.put("o:" + orderId, JSON.stringify(pedido), { expirationTtl: 60 * 60 * 24 * 400 });
+  return { orderId, amount: total, subtotal: sub, envio, currency: "COP", signature };
+}
+
+async function marcarPagado(env, orderId, info) {
+  if (!env.PEDIDOS) return null;
+  const raw = await env.PEDIDOS.get("o:" + orderId); if (!raw) return null;
+  const p = JSON.parse(raw);
+  if (p.estado === "pagado" || p.estado === "despachado") return p;
+  if (info.total && Number(info.total) !== p.total) { p.alerta = "El monto pagado (" + info.total + ") no coincide con el pedido"; }
+  p.estado = "pagado"; p.pagado = new Date().toISOString(); p.bold = info;
+  await env.PEDIDOS.put("o:" + orderId, JSON.stringify(p), { expirationTtl: 60 * 60 * 24 * 400 });
+  p.aviso = await avisar(env, p);
+  await env.PEDIDOS.put("o:" + orderId, JSON.stringify(p), { expirationTtl: 60 * 60 * 24 * 400 });
+  return p;
+}
+
+async function avisar(env, p) {
+  if (!env.NTFY_TOPIC) return "falta la variable NTFY_TOPIC";
+  const ent = p.entrega.tipo === "tienda" ? "Recoge en " + (p.entrega.tienda === "manila" ? "Manila" : "Calle 10") : p.entrega.tipo === "medellin" ? "Domicilio Medellín · " + p.entrega.barrio : "Envío nacional · " + p.entrega.ciudad;
+  const n = p.lineas.reduce((a, l) => a + l.q, 0);
+  return enviarAviso(env, "Nuevo pedido pagado " + fmt(p.total) + (p.modo === "pruebas" ? " (PRUEBA)" : ""), p.orderId + " · " + n + (n === 1 ? " producto" : " productos") + "\n" + ent + "\n" + p.cliente.nombre);
+}
+
+async function enviarAviso(env, titulo, texto) {
+  try {
+    const r = await fetch("https://ntfy.sh/", {
+      method: "POST",
+      headers: { "content-type": "application/json", ...(env.NTFY_TOKEN ? { Authorization: "Bearer " + String(env.NTFY_TOKEN).trim() } : {}) },
+      body: JSON.stringify({ topic: String(env.NTFY_TOPIC).trim(), title: titulo, message: texto, tags: ["shopping_bags", "moneybag"], priority: 4, click: "https://" + env.WORKER_HOST + "/pedidos" }),
+    });
+    return r.ok ? "ok" : "ntfy respondió " + r.status + ": " + (await r.text()).slice(0, 200);
+  } catch (e) { return "error: " + String(e.message || e); }
+}
+
+async function consultarBold(env, orderId) {
+  const key = LLAVES[env.MODO === "produccion" ? "produccion" : "pruebas"];
+  const r = await fetch("https://payments.api.bold.co/v2/payment-voucher/" + encodeURIComponent(orderId), { headers: { Authorization: "x-api-key " + key } });
+  if (!r.ok) return { payment_status: "ERROR_" + r.status };
+  return r.json();
+}
+
+function panel(pedidos, pin) {
+  const fila = p => {
+    const e = p.entrega, c = p.cliente;
+    const ent = e.tipo === "tienda" ? "🏬 Recoge en tienda " + (e.tienda === "manila" ? "Manila" : "Calle 10") : (e.tipo === "medellin" ? "🛵 Domicilio Medellín" : "📦 Envío nacional") + "<br>" + esc(e.dir) + (e.detalle ? " · " + esc(e.detalle) : "") + "<br>" + esc([e.barrio, e.ciudad, e.depto].filter(Boolean).join(", "));
+    const est = { "pagado": "#1f8f4e", "despachado": "#555", "sin pagar": "#b58100" }[p.estado] || "#555";
+    return `<article><header><b>${esc(p.orderId)}</b><span style="background:${est}">${esc(p.estado)}${p.modo === "pruebas" ? " · prueba" : ""}</span></header>
+<p class=m>${new Date(p.pagado || p.creado).toLocaleString("es-CO", { timeZone: "America/Bogota" })}${p.ref ? " · Vengo de: " + esc(p.ref) : ""}</p>
+${p.alerta ? `<p class=al>⚠️ ${esc(p.alerta)}</p>` : ""}${p.aviso && p.aviso !== "ok" ? `<p class=al>🔕 Aviso al celular: ${esc(p.aviso)}</p>` : ""}
+<div class=g><div><h4>Cliente</h4><p>${esc(c.nombre)}<br>${esc(c.tipoDoc)} ${esc(c.doc)}<br><a href="https://wa.me/${esc(String(c.cel).replace(/\D/g, "").replace(/^3/, "573"))}">📱 ${esc(c.cel)}</a><br>${esc(c.correo)}</p></div><div><h4>Entrega</h4><p>${ent}${e.notas ? "<br><i>" + esc(e.notas) + "</i>" : ""}</p></div></div>
+<ul>${p.lineas.map(l => `<li>${l.foto ? `<img src="${esc(l.foto)}" alt="">` : ""}<span><b>${l.q} × ${esc(l.nombre)}</b>${l.opcion ? " · " + esc(l.opcion) : ""}${l.diseno ? " · diseño " + l.diseno : ""}<br><small>Ref. ${esc(l.id)} · ${fmt(l.precio)} c/u</small></span></li>`).join("")}</ul>
+<p class=t>Productos ${fmt(p.subtotal)} · Envío ${fmt(p.envio)} · <b>Total ${fmt(p.total)}</b>${p.bold && p.bold.transaction_id ? " · Bold " + esc(p.bold.transaction_id) : ""}</p>
+${p.estado === "pagado" ? `<form method=post action="/estado"><input type=hidden name=pin value="${esc(pin)}"><input type=hidden name=id value="${esc(p.orderId)}"><button>Marcar como despachado</button></form>` : ""}</article>`;
+  };
+  const pag = pedidos.filter(p => p.estado !== "sin pagar"), sin = pedidos.filter(p => p.estado === "sin pagar").slice(0, 15);
+  return `<!doctype html><html lang=es><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Pedidos · Te Amo Medellín</title>
+<style>body{font-family:system-ui,sans-serif;background:#FFF9DE;color:#18181E;margin:0;padding:16px;max-width:820px;margin:auto}h1{margin:.2em 0}article{background:#fff;border:1.5px solid #e9e1bd;border-radius:16px;padding:14px;margin:12px 0}header{display:flex;justify-content:space-between;align-items:center;gap:8px}header span{color:#fff;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700}.m{color:#666;font-size:13px;margin:4px 0}.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:560px){.g{grid-template-columns:1fr}}h4{margin:8px 0 2px;font-size:12px;text-transform:uppercase;color:#888}p{margin:0}ul{list-style:none;padding:0;margin:10px 0}li{display:flex;gap:10px;align-items:center;margin:6px 0}li img{width:54px;height:54px;border-radius:10px;object-fit:cover}.t{border-top:1px solid #eee;padding-top:8px}button{margin-top:10px;background:#18181E;color:#fff;border:0;border-radius:99px;padding:9px 14px;font-weight:700}.al{color:#D32E2A;font-weight:700}details{margin-top:24px}</style>
+<h1>Pedidos pagados</h1><p class=m>Se actualiza al recargar. Los más recientes arriba.</p>
+${pag.length ? pag.map(fila).join("") : "<p>Aún no hay pedidos pagados.</p>"}
+<details><summary>Pedidos iniciados sin pagar (${sin.length})</summary>${sin.map(fila).join("")}</details></html>`;
+}
+
+async function listar(env) {
+  const out = []; let cursor;
+  do { const r = await env.PEDIDOS.list({ prefix: "o:", cursor, limit: 1000 }); for (const k of r.keys) out.push(k.name); cursor = r.list_complete ? null : r.cursor; } while (cursor && out.length < 2000);
+  const vals = await Promise.all(out.slice(-200).map(k => env.PEDIDOS.get(k)));
+  return vals.filter(Boolean).map(v => JSON.parse(v)).sort((a, b) => (b.pagado || b.creado).localeCompare(a.pagado || a.creado));
+}
+
+export default {
+  async fetch(req, env) {
+    const url = new URL(req.url); env.WORKER_HOST = url.host;
+    const h = cors(req.headers.get("Origin"));
+    if (req.method === "OPTIONS") return new Response(null, { headers: h });
+    try {
+      if (url.pathname === "/webhook" && req.method === "POST") {
+        const body = await req.text();
+        const firma = await hmac(env.MODO === "produccion" ? env.BOLD_SECRET : "", btoa(unescape(encodeURIComponent(body))));
+        if (firma !== (req.headers.get("x-bold-signature") || "")) return new Response("firma inválida", { status: 401 });
+        const ev = JSON.parse(body), ref = ev?.data?.metadata?.reference;
+        if (ev.type === "SALE_APPROVED" && ref) await marcarPagado(env, ref, { transaction_id: ev.subject, total: ev?.data?.amount?.total, via: "webhook" });
+        return new Response("ok");
+      }
+      if (url.pathname === "/confirmar" && req.method === "POST") {
+        const { orderId } = await req.json();
+        const v = await consultarBold(env, clean(orderId, 60));
+        let p = null;
+        if (v.payment_status === "APPROVED") p = await marcarPagado(env, orderId, { transaction_id: v.transaction_id, total: v.total, metodo: v.payment_method, via: "consulta" });
+        return Response.json({ estado: v.payment_status, total: p ? p.total : v.total }, { headers: h });
+      }
+      if (url.pathname === "/probar-aviso") {
+        if (!env.PANEL_PIN || url.searchParams.get("pin") !== env.PANEL_PIN) return new Response("Clave incorrecta", { status: 401 });
+        if (!env.NTFY_TOPIC) return new Response("Falta la variable NTFY_TOPIC en Cloudflare");
+        const r = await enviarAviso(env, "Prueba de aviso Te Amo Medellín", "Si ves esto, los avisos de pedidos funcionan ✅");
+        return new Response(r === "ok" ? "✅ Aviso enviado. Revisa el celular." : "❌ No se pudo enviar: " + r, { headers: { "content-type": "text/plain; charset=utf-8" } });
+      }
+      if (url.pathname === "/pedidos" || url.pathname === "/estado") {
+        let pin = url.searchParams.get("pin") || "";
+        if (req.method === "POST") { const f = await req.formData(); pin = f.get("pin") || ""; 
+          if (pin && pin === env.PANEL_PIN && env.PEDIDOS) { const id = f.get("id"); const raw = await env.PEDIDOS.get("o:" + id); if (raw) { const p = JSON.parse(raw); p.estado = "despachado"; p.despachado = new Date().toISOString(); await env.PEDIDOS.put("o:" + id, JSON.stringify(p), { expirationTtl: 60 * 60 * 24 * 400 }); } } }
+        if (!env.PANEL_PIN || pin !== env.PANEL_PIN) return new Response(`<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><body style="font-family:system-ui;background:#FFF9DE;display:grid;place-items:center;min-height:90vh"><form method=get action="/pedidos" style="background:#fff;padding:24px;border-radius:16px"><h2>Pedidos Te Amo Medellín</h2><input name=pin type=password placeholder="Clave" style="padding:10px;font-size:16px;width:100%;box-sizing:border-box"><button style="margin-top:10px;width:100%;padding:10px;background:#18181E;color:#fff;border:0;border-radius:99px">Entrar</button></form>`, { headers: { "content-type": "text/html; charset=utf-8" } });
+        if (!env.PEDIDOS) return new Response("Falta conectar el almacenamiento PEDIDOS", { status: 500 });
+        return new Response(panel(await listar(env), pin), { headers: { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" } });
+      }
+      if (req.method === "POST") return Response.json(await crearPedido(await req.json(), env), { headers: h });
+      return new Response("Te Amo Medellín · pagos", { headers: h });
+    } catch (e) {
+      return Response.json({ error: String(e.message || e) }, { status: 400, headers: h });
+    }
+  },
+};
