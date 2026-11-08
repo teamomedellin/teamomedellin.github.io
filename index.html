@@ -611,6 +611,9 @@ main .wrap{padding-top:18px}
 .pv-head h1{font-family:var(--f-display);font-stretch:112%;font-weight:850;font-size:clamp(28px,4.4vw,42px);line-height:1;margin:2px 0 0}
 .pv-head p{margin:0;color:var(--muted);font-style:italic;font-size:15px}
 .pv-head .n{font-size:12.5px;font-weight:700;color:var(--muted)}
+
+/* herramienta del equipo: solo con el enlace #equipo */
+#staffBtn{display:none!important}
 </style>
 
 <div class="announce" aria-live="polite"><span id="annTxt">Domicilios en Medellín · Envíos nacionales e internacionales</span></div>
@@ -1145,7 +1148,7 @@ function parseCode(txt){const m=String(txt||"").replace(/\s+/g,"").replace(/[×*
   return m[1].split(",").map(e=>{const r=e.match(/^(\d+)(?:\.(\d+))?x(\d+)$/i);return r?{id:r[1],d:r[2]?+r[2]-1:null,q:+r[3]}:null}).filter(Boolean)}
 const viewer=document.getElementById("viewer"),vscrim=document.getElementById("vscrim");
 function openViewer(items){viewer.hidden=false;vscrim.hidden=false;if(items)showOrder(items);else document.getElementById("vIn").focus()}
-function closeViewer(){viewer.hidden=true;vscrim.hidden=true;try{if(location.hash.includes("pedido="))history.replaceState(null,"",location.pathname+location.search)}catch(_){}}
+function closeViewer(){viewer.hidden=true;vscrim.hidden=true;try{if(location.hash.includes("pedido=")||location.hash==="#equipo")history.replaceState(null,"",location.pathname+location.search)}catch(_){}}
 function showOrder(items){let total=0;
   document.getElementById("vLines").innerHTML=items.map(it=>{const x=OPT[it.id];
     if(!x)return `<div class="line vline"><div class="vth"></div><div class="ln">${t("vMiss")}<div class="lp">Ref. ${esc(it.id)} · ${it.q} u.</div></div></div>`;
@@ -1156,7 +1159,7 @@ document.getElementById("staffBtn").onclick=()=>openViewer();
 document.getElementById("vPaste").onclick=async()=>{try{const txt=await navigator.clipboard.readText();document.getElementById("vIn").value=txt}catch(_){document.getElementById("vIn").focus();return}document.getElementById("vGo").click()};
 document.getElementById("vClose").onclick=closeViewer; vscrim.onclick=closeViewer;
 document.getElementById("vGo").onclick=()=>{const it=parseCode(document.getElementById("vIn").value);if(!it||!it.length){document.getElementById("vLines").innerHTML=`<p class="note">${t("vBad")}</p>`;document.getElementById("vTot").hidden=true;return}showOrder(it)};
-function checkHash(){const m=decodeURIComponent(location.hash||"").match(/pedido=(TAM-[0-9.x,]+)/i);if(m&&DATA.products.length){const it=parseCode(m[1]);if(it&&it.length){document.getElementById("vIn").value=m[1];openViewer(it)}}}
+function checkHash(){if(location.hash==="#equipo"&&DATA.products.length){openViewer();return}const m=decodeURIComponent(location.hash||"").match(/pedido=(TAM-[0-9.x,]+)/i);if(m&&DATA.products.length){const it=parseCode(m[1]);if(it&&it.length){document.getElementById("vIn").value=m[1];openViewer(it)}}}
 window.addEventListener("hashchange",checkHash);
 function renderOrder(){
   let n=0,total=0; cart.forEach((q,id)=>{n+=q;total+=OPT[pid(id)].o.price*q});
