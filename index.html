@@ -540,6 +540,61 @@ html,body{overflow-x:clip}
 .pol-body h3{font-family:var(--f-display);font-stretch:110%;font-size:16px;margin:16px 0 4px}
 .pol-body p,.pol-body ul{margin:0 0 6px}.pol-body ul{padding-left:20px}
 .pol-meta{color:#777;font-size:12.5px;margin-top:14px !important}
+
+/* === v2: look más limpio y profesional === */
+.body{gap:8px}
+.name{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.more-note{margin:12px 0 0;text-align:center;font-size:14px}
+.more-note a{color:var(--ink);font-weight:600;text-decoration:underline;text-decoration-color:var(--red);text-underline-offset:3px}
+.more-note a:hover{color:var(--red)}
+.card{border-color:#eee6c8;box-shadow:0 1px 2px rgba(24,24,30,.04)}
+.cat-head{scroll-margin-top:96px}
+.catnav{display:none}
+@media (min-width:900px){
+  .catnav{display:block;border-top:1px solid rgba(253,251,247,.1)}
+  .catnav .wrap{display:flex;justify-content:center;gap:4px 26px;flex-wrap:wrap;padding-block:9px}
+  .catnav a{color:#e9e6dc;text-decoration:none;font:600 13.5px var(--f-body);padding:2px 0;border-bottom:2px solid transparent;white-space:nowrap}
+  .catnav a:hover,.catnav a:focus-visible{color:var(--white);border-bottom-color:var(--red)}
+  .cat-head{scroll-margin-top:140px}
+}
+.cats{padding:clamp(22px,4vw,40px) 0 4px}
+.cats-head{display:flex;align-items:baseline;justify-content:space-between;gap:6px 16px;flex-wrap:wrap;margin-bottom:14px}
+.cats-head h2{font-family:var(--f-display);font-stretch:112%;font-weight:850;font-size:clamp(22px,3vw,30px);margin:0}
+.cats-head p{margin:0;color:var(--muted);font-size:14.5px}
+.cats-rail{display:grid;grid-auto-flow:column;grid-auto-columns:42%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px max(16px,env(safe-area-inset-left,0px)) 8px;scroll-padding-inline:16px}
+.cats-rail::-webkit-scrollbar{display:none}
+@media (min-width:620px){.cats-rail{grid-auto-columns:28%}}
+@media (min-width:900px){.cats-rail{grid-auto-flow:row;grid-template-columns:repeat(5,1fr);overflow:visible;max-width:1120px;margin:0 auto;padding-inline:16px;gap:16px}}
+.ctile{scroll-snap-align:start;display:flex;flex-direction:column;background:var(--white);border:1.5px solid #eee6c8;border-radius:18px;overflow:hidden;text-decoration:none;color:var(--ink)}
+.ct-ph{aspect-ratio:1/1;display:grid;place-items:center;overflow:hidden}
+.ct-ph img{width:100%;height:100%;object-fit:cover}
+.ct-ph img.ico{width:50%;height:auto;object-fit:contain}
+.ct-t{padding:10px 12px 12px;display:grid;gap:2px}
+.ct-t b{font-weight:700;font-size:15px;line-height:1.2}
+.ct-t small{font-size:12.5px;color:var(--muted);font-weight:600}
+.ctile:hover .ct-t small,.ctile:focus-visible .ct-t small{color:var(--red)}
+.ctile:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){.ctile{transition:transform .18s ease,box-shadow .18s ease}.ctile:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(24,24,30,.1)}}
+.trust{background:var(--white);border-block:1.5px solid #eee6c8;margin-top:clamp(28px,5vw,48px)}
+.trust ul{list-style:none;margin:0;padding:clamp(18px,3vw,26px) 0;display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.trust li{display:flex;gap:12px;align-items:flex-start}
+.tr-ic{flex:none;width:44px;height:44px;border-radius:50%;background:var(--paper);color:var(--red);display:grid;place-items:center}
+.trust b{display:block;font-weight:800;font-size:14.5px}
+.trust small{display:block;color:var(--muted);font-size:13px;line-height:1.35;margin-top:2px}
+@media (max-width:860px){.trust ul{grid-template-columns:1fr 1fr}}
+@media (max-width:420px){.trust ul{gap:14px}.tr-ic{width:38px;height:38px}.tr-ic svg{width:22px;height:22px}}
+.info .wrap{padding-top:clamp(28px,5vw,44px)}
+.fgrid{flex:1 1 100%;display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:24px;padding:22px 0;border-block:1px solid rgba(253,251,247,.12)}
+.fgrid h3{margin:0 0 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#9d998c;font-weight:700}
+.fgrid ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.fgrid li{font-size:14px}
+.fgrid li b{display:block;color:var(--white)}
+.fgrid li span{display:block}
+.fgrid a{color:#e9e6dc;text-decoration:none}
+.fgrid a:hover,.fgrid a:focus-visible{color:var(--white);text-decoration:underline}
+.fgrid li+li{margin-top:2px}
+@media (max-width:700px){.fgrid{grid-template-columns:1fr 1fr}.fgrid>div:first-child{grid-column:1/-1}.fgrid>div:first-child ul{grid-template-columns:1fr 1fr}}
+@media (max-width:400px){.fgrid>div:first-child ul{grid-template-columns:1fr}}
 </style>
 
 <div class="announce" aria-live="polite"><span id="annTxt">Domicilios en Medellín · Envíos nacionales e internacionales</span></div>
@@ -552,6 +607,7 @@ html,body{overflow-x:clip}
       <button type="button" class="tb-btn" id="tbBag" aria-label="Tu pedido"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8h14l-1 12H6L5 8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><b id="tbCount" hidden>0</b></button>
     </div>
   </div>
+  <nav class="catnav" aria-label="Categorías"><div class="wrap" id="catnav"></div></nav>
 </header>
 <section class="bhero" aria-labelledby="bhH">
   <img class="bh-img" src="tienda/hero.jpg" alt="Interior de la tienda Te Amo Medellín con camisetas, sombreros y artesanías" fetchpriority="high">
@@ -575,6 +631,10 @@ html,body{overflow-x:clip}
   </div>
 </section>
 
+<section class="cats" id="categorias" aria-labelledby="catsH">
+  <div class="wrap cats-head"><h2 id="catsH" data-i18n="catsH">Compra por categoría</h2><p data-i18n="catsP">Elige qué quieres llevarte de Medellín.</p></div>
+  <div class="cats-rail" id="catsGrid"></div>
+</section>
 <div class="bar" id="searchBar" hidden>
   <div class="wrap">
     <div class="chips" id="chips" role="toolbar" aria-label="Categorías"></div>
@@ -608,6 +668,7 @@ html,body{overflow-x:clip}
   </div>
 </section>
 
+<section class="trust" aria-label="Por qué comprarnos"><div class="wrap"><ul><li><span class="tr-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.6-7 10-7 10Z"/></svg></span><span><b data-i18n="tr1H"></b><small data-i18n="tr1P"></small></span></li><li><span class="tr-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><path d="M12 14v2"/></svg></span><span><b data-i18n="tr2H"></b><small data-i18n="tr2P"></small></span></li><li><span class="tr-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h11v10H3z"/><path d="M14 9h4l3 3v4h-7"/><circle cx="7" cy="17.5" r="1.8"/><circle cx="17.5" cy="17.5" r="1.8"/></svg></span><span><b data-i18n="tr3H"></b><small data-i18n="tr3P"></small></span></li><li><span class="tr-ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12Z"/><path d="M9 10.5h6M9 13.5h4"/></svg></span><span><b data-i18n="tr4H"></b><small data-i18n="tr4P"></small></span></li></ul></div></section>
 <section class="info"><div class="wrap">
   <div class="biz" id="empresas">
     <div><span class="eyebrow" data-i18n="bizEy">Empresas y al por mayor</span><h2 data-i18n="bizH">Kits empresariales y regalos corporativos</h2><p data-i18n="bizP">Armamos kits con productos típicos de Medellín para clientes, colaboradores y eventos, y vendemos al por mayor productos seleccionados.</p></div>
@@ -631,6 +692,17 @@ html,body{overflow-x:clip}
         <a href="https://www.instagram.com/teamomedellinoficial/" target="_blank" rel="noopener"><i style="background:var(--c-acc)">IG</i><span><b>Instagram</b>@teamomedellinoficial</span></a>
         <a href="https://www.tiktok.com/@souvenirsmedellin" target="_blank" rel="noopener"><i style="background:var(--c-souv)">TT</i><span><b>TikTok</b>@souvenirsmedellin</span></a>
       </div>
+    </div>
+    <div class="fgrid">
+      <div><h3 data-i18n="fStores">Nuestras tiendas</h3><ul>
+        <li><b>Calle 10</b><span>Calle 10 #37-41, El Poblado</span><a href="tel:+573134740880">313 474 0880</a></li>
+        <li><b>Manila</b><span>Calle 13 #43D-27, El Poblado</span><a href="tel:+573244213595">324 421 3595</a></li></ul></div>
+      <div><h3 data-i18n="fShop">Compra</h3><ul id="fCats"></ul></div>
+      <div><h3 data-i18n="fHelp">Ayuda</h3><ul>
+        <li><a href="#" id="fWa" target="_blank" rel="noopener" data-i18n="fWa">Pedidos por WhatsApp</a></li>
+        <li><a href="#empresas" data-i18n="fBiz">Kits y regalos corporativos</a></li>
+        <li><a href="#cat-para-emprender" data-jump="Para emprender" data-i18n="fBulk">Ventas al por mayor</a></li>
+        <li><a href="#visitanos" data-i18n="fPay">Formas de pago y entregas</a></li></ul></div>
     </div>
     <p class="foot-legal"><a href="#" class="polLink" data-i18n="polFoot">Política de tratamiento de datos personales</a></p>
     <button type="button" class="staff" id="staffBtn" data-i18n="staffBtn">Equipo Te Amo: ver un pedido con fotos</button>
@@ -823,6 +895,23 @@ try{const s=localStorage.getItem("lang");if(s==="en"||s==="es")LANG=s;else if(!/
 const t=k=>T[LANG][k];
 const fmt = n => "$" + Math.round(n).toLocaleString("es-CO");
 const cart = new Map(); const sel = {}; let cat = "Todo", query = ""; const OPT = {};
+Object.assign(T.es,{catsH:'Compra por categoría',catsP:'Elige qué quieres llevarte de Medellín.',catGo:n=>n===1?'1 producto':n+' productos',
+ tr1H:'Hecho en Colombia',tr1P:'Productos colombianos elegidos a mano',tr2H:'Pago seguro',tr2P:'Con Bold: tarjeta, PSE y Nequi',tr3H:'Envíos',tr3P:'Domicilio en Medellín, nacional e internacional',tr4H:'Atención por WhatsApp',tr4P:'Te ayudamos con tu pedido',
+ fStores:'Nuestras tiendas',fShop:'Compra',fHelp:'Ayuda',fWa:'Pedidos por WhatsApp',fBiz:'Kits y regalos corporativos',fBulk:'Ventas al por mayor',fPay:'Formas de pago y entregas',moreNote:'¿Buscas otro diseño? Tenemos muchos más en tienda, pídelos por WhatsApp'});
+Object.assign(T.en,{catsH:'Shop by category',catsP:'Pick what you want to take home from Medellín.',catGo:n=>n===1?'1 item':n+' items',
+ tr1H:'Made in Colombia',tr1P:'Colombian products, hand-picked',tr2H:'Secure payment',tr2P:'With Bold: cards, PSE and Nequi',tr3H:'Shipping',tr3P:'Delivery in Medellín, Colombia and worldwide',tr4H:'WhatsApp support',tr4P:'We help you with your order',
+ fStores:'Our stores',fShop:'Shop',fHelp:'Help',fWa:'Order on WhatsApp',fBiz:'Corporate gifts & kits',fBulk:'Wholesale',fPay:'Payment & delivery',moreNote:'Looking for another design? We have many more in store, ask us on WhatsApp'});
+function slug(n){return String(n).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}
+function renderCats(){if(!DATA.products.length)return;
+  const cs=DATA.categories.map(c=>{const it=DATA.products.filter(p=>p.cat===c.name&&avail(p).length).sort((a,b)=>a.rank-b.rank);return{c,it,ph:(it.find(p=>p.photos.length)||{photos:[]}).photos[0]}}).filter(x=>x.it.length);
+  const a=(x,cls)=>`<a href="#cat-${slug(x.c.name)}" data-jump="${esc(x.c.name)}"${cls?` class="${cls}"`:""}>`;
+  document.getElementById("catsGrid").innerHTML=cs.map(x=>`${a(x,"ctile")}<span class="ct-ph" style="background:${x.c.color}">${x.ph?`<img src="${x.ph}" alt="" loading="lazy">`:`<img class="ico" src="${ICONS[x.c.icon]||ICONS.gift}" alt="">`}</span><span class="ct-t"><b>${esc(cn(x.c))}</b><small>${t("catGo")(x.it.length)} →</small></span></a>`).join("");
+  document.getElementById("catnav").innerHTML=cs.map(x=>a(x)+esc(cn(x.c))+"</a>").join("");
+  document.getElementById("fCats").innerHTML=cs.map(x=>"<li>"+a(x)+esc(cn(x.c))+"</a></li>").join("");
+  document.getElementById("fWa").href=waLink(t("waHi"));}
+document.addEventListener("click",e=>{const a=e.target.closest("[data-jump]");if(!a)return;e.preventDefault();
+  if(cat!=="Todo"||query){cat="Todo";query="";const qi=document.getElementById("q");if(qi)qi.value="";renderChips();renderList()}
+  const el=document.getElementById("cat-"+slug(a.dataset.jump));if(el)el.scrollIntoView({behavior:smooth(),block:"start"})});
 function norm(s){return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 function avail(p){return p.options.filter(o=>o.q>0)}
@@ -839,7 +928,7 @@ function applyStatic(){
   document.getElementById("bizwa").href="https://wa.me/"+String(CONFIG.whatsapp||"573134740880").replace(/\D/g,"")+"?text="+encodeURIComponent(t("bizMsg"));
   if(CONFIG.updated) document.getElementById("stamp").textContent=t("stamp")(fmtDate(CONFIG.updated));
 }
-function setLang(l){LANG=l;try{localStorage.setItem("lang",l)}catch(_){}applyStatic();renderPaisa();showAnn();renderPromos();if(DATA.products.length){renderChips();renderList();renderOrder()}}
+function setLang(l){LANG=l;try{localStorage.setItem("lang",l)}catch(_){}applyStatic();renderPaisa();showAnn();renderPromos();if(DATA.products.length){renderChips();renderList();renderCats();renderOrder()}}
 document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
 const menu=document.getElementById("menu"),mscrim=document.getElementById("mscrim"),menuBtn=document.getElementById("menuBtn");
 function openMenu(){renderMenuCats();menu.hidden=false;mscrim.hidden=false;menuBtn.setAttribute("aria-expanded","true");document.getElementById("menuClose").focus()}
@@ -894,11 +983,11 @@ function bodyHTML(p,d){
   const dn=d!=null?`<span class="dnum">${t("design")} <b>${d+1}</b>/${p.photos.length} · ${t("swipe")}</span>`:"";
   const hot=(DATA.top||[]).includes(p.key)?`<span class="hot">${t("hot")}</span>`:"";
   let save="";const pm=String(p.promo||"").match(/(\d+)\s*x\s*\$?\s*([\d.]+)/i);
-  if(pm){const n=+pm[1],tot=+pm[2].replace(/\./g,""),dif=n*o.price-tot;if(dif>0)save=`<span class="save">${t("save")(n,fmt(tot),fmt(dif))}</span>`}
+  
   if(p.pack){const u=Math.round(o.price/p.pack.n),g=(p.pack.sug-u)*p.pack.n;save=`<span class="save">${t("packU")(fmt(u))}</span>`+(g>0?`<span class="gain">${t("packG")(fmt(p.pack.sug),fmt(g))}</span>`:"")}
   const upP=p.up&&DATA.products.find(x=>x.key===p.up&&avail(x).length);
   const up=upP?`<button type="button" class="upsell" data-upgo="${upP.key}">${t("upTxt")(upP.pack?fmt(Math.round(selected(upP).price/upP.pack.n)):"")} →</button>`:"";
-  return `<div class="body">${hot}<h3 class="name">${esc(pn(p))}</h3>${dn}${moreHTML(p)}${opts}${up}<div class="row"><span class="pwrap"><span class="price">${fmt(o.price)}</span>${save}</span><span>${controlHTML(K(o.id,d))}</span></div></div>`;
+  return `<div class="body">${hot}<h3 class="name">${esc(pn(p))}</h3>${opts}${up}<div class="row"><span class="pwrap"><span class="price">${fmt(o.price)}</span>${save}</span><span>${controlHTML(K(o.id,d))}</span></div></div>`;
 }
 function cardHTML(p){
   const c=catOf(p.cat), o=selected(p);
@@ -974,7 +1063,7 @@ function showcaseHTML(items){
 }
 function catHeadHTML(g){
   const say=(T[LANG].catSay||{})[g.cat.name]||"";
-  return `<header class="cat-head" style="--cc:${g.cat.color}"><div><h2>${esc(g.title)}</h2>${say?`<p><q>${esc(say)}</q></p>`:""}<span class="n">${g.items.length===1?t("items1"):t("itemsN")(g.items.length)}</span></div><img src="${ICONS[g.cat.icon]||ICONS.gift}" alt=""></header>`;
+  return `<header class="cat-head" id="cat-${slug(g.cat.name)}" style="--cc:${g.cat.color}"><div><h2>${esc(g.title)}</h2>${say?`<p><q>${esc(say)}</q></p>`:""}<span class="n">${g.items.length===1?t("items1"):t("itemsN")(g.items.length)}</span></div><img src="${ICONS[g.cat.icon]||ICONS.gift}" alt=""></header>`;
 }
 function renderList(){
   const q=norm(query.trim());
@@ -984,7 +1073,7 @@ function renderList(){
   if(!items.length){list.innerHTML=`<p class="empty">${t("empty")}</p>`;return}
   const groups=DATA.categories.map(c=>({cat:c,title:cn(c),items:items.filter(p=>p.cat===c.name).sort((a,b)=>a.rank-b.rank)})).filter(g=>g.items.length);
   let top=[]; if(false&&cat==="Todo"&&!q&&DATA.top){top=DATA.top.map(k=>DATA.products.find(p=>p.key===k)).filter(p=>p&&avail(p).length)}
-  list.innerHTML=(top.length?showcaseHTML(top):"")+(cat==="Todo"?`<div class="grid">${groups.flatMap(g=>g.items).map(cardHTML).join("")}</div>`:groups.map(g=>catHeadHTML(g)+`<div class="grid">${g.items.map(cardHTML).join("")}</div>`).join(""));
+  list.innerHTML=(top.length?showcaseHTML(top):"")+(groups.map(g=>catHeadHTML(g)+`<div class="grid">${g.items.map(cardHTML).join("")}</div>`+(g.items.some(hasMore)?`<p class="more-note"><a href="${waLink(t("moreNote"))}" target="_blank" rel="noopener">${t("moreNote")} →</a></p>`:"")).join(""));
   const rail=document.getElementById("rail"); if(rail) list.querySelectorAll("[data-rail]").forEach(b=>b.onclick=()=>rail.scrollBy({left:Number(b.dataset.rail)*rail.clientWidth*.8,behavior:"smooth"}));
   reveal(list);
   list.querySelectorAll(".gal").forEach(gal=>gal.addEventListener("scroll",()=>{const i=Math.round(gal.scrollLeft/gal.clientWidth);const d=gal.parentElement.querySelector(".dots");if(d)[...d.children].forEach((e,j)=>e.classList.toggle("on",j===i));
@@ -1132,7 +1221,7 @@ applyStatic();renderPaisa();
 fetch("catalogo.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
   DATA=d; CONFIG={whatsapp:d.whatsapp,updated:d.updated};
   d.products.forEach(p=>p.options.forEach(o=>OPT[o.id]={p,o}));
-  applyStatic(); renderChips(); renderList(); renderOrder(); checkHash(); renderPromos(); window.dispatchEvent(new Event("tam-ready"));
+  applyStatic(); renderChips(); renderList(); renderCats(); renderOrder(); checkHash(); renderPromos(); window.dispatchEvent(new Event("tam-ready"));
   try{const ks=(d.top||[]).concat(d.products.map(p=>p.key));const seen=new Set();const ph=[];for(const k of ks){const p=d.products.find(x=>x.key===k);if(!p||seen.has(k)||!p.photos.length||!avail(p).length)continue;seen.add(k);ph.push(p.photos[0]);if(ph.length>=10)break}
     const h=ph.map(u=>`<img src="${u}" alt="" loading="eager">`).join("");const st=document.getElementById("strip");if(st)st.innerHTML=h+h}catch(_){}
 }).catch(()=>{document.getElementById("list").innerHTML=`<p class="empty">${t("loadErr")}</p>`});
