@@ -595,6 +595,22 @@ html,body{overflow-x:clip}
 .fgrid li+li{margin-top:2px}
 @media (max-width:700px){.fgrid{grid-template-columns:1fr 1fr}.fgrid>div:first-child{grid-column:1/-1}.fgrid>div:first-child ul{grid-template-columns:1fr 1fr}}
 @media (max-width:400px){.fgrid>div:first-child ul{grid-template-columns:1fr}}
+
+/* === v3: inicio informativo, productos en vista de categoría === */
+.dicc{display:none!important}
+body:not(.pv) main{display:none}
+body.pv .bhero,body.pv .hero,body.pv #categorias,body.pv .dicc,body.pv .shop,body.pv .info{display:none}
+body.pv #searchBar{display:block!important}
+body.pv .bar .chips{display:flex}
+@media (min-width:900px){.bar{top:111px}body.pv .bar .chips{display:none}}
+.catnav a[aria-current="page"]{color:var(--white);border-bottom-color:var(--red)}
+main .wrap{padding-top:18px}
+.pv-head{padding:4px 0 20px;display:grid;gap:6px;justify-items:start}
+.pv-back{border:0;background:none;padding:4px 0;font:600 14px var(--f-body);color:var(--muted);cursor:pointer}
+.pv-back:hover,.pv-back:focus-visible{color:var(--red)}
+.pv-head h1{font-family:var(--f-display);font-stretch:112%;font-weight:850;font-size:clamp(28px,4.4vw,42px);line-height:1;margin:2px 0 0}
+.pv-head p{margin:0;color:var(--muted);font-style:italic;font-size:15px}
+.pv-head .n{font-size:12.5px;font-weight:700;color:var(--muted)}
 </style>
 
 <div class="announce" aria-live="polite"><span id="annTxt">Domicilios en Medellín · Envíos nacionales e internacionales</span></div>
@@ -615,7 +631,7 @@ html,body{overflow-x:clip}
     <span class="bh-ey" data-i18n="bhEy">Souvenirs de Medellín · El Poblado</span>
     <h1 class="bh-h" id="bhH" data-i18n-html="bhH">Un pedacito de <em>Medellín</em> pa’ llevar</h1>
     <p class="bh-p" data-i18n="bhP">Café, artesanías, camisetas y detalles paisas, elegidos con amor en nuestras dos tiendas.</p>
-    <div class="bh-cta"><a class="bh-btn" href="#list" data-i18n="bhShop">Ver tienda</a><a class="bh-btn ghost" href="#empresas" data-i18n="bhBiz">Regalos corporativos</a></div>
+    <div class="bh-cta"><a class="bh-btn" href="#categorias" data-i18n="bhShop">Ver tienda</a><a class="bh-btn ghost" href="#empresas" data-i18n="bhBiz">Regalos corporativos</a></div>
     <ul class="bh-trust"><li data-i18n="bhT1">🛵 Domicilio a tu hotel</li><li data-i18n="bhT2">📦 Envíos a toda Colombia</li><li data-i18n="bhT3">🏬 2 tiendas en El Poblado</li></ul>
   </div>
 </section>
@@ -720,7 +736,6 @@ html,body{overflow-x:clip}
     <li><a href="#" data-cat="Para emprender" class="m-hi" data-i18n="mBulk">💼 Para emprender · por mayor</a></li>
     <li><a href="#empresas" data-go="empresas" data-i18n="mBiz">Regalos corporativos</a></li>
     <li><a href="#tienda" data-go="tienda" data-i18n="mStore">Nuestra tienda</a></li>
-    <li><a href="#paisa" data-go="paisa" data-i18n="mPaisa">Diccionario paisa</a></li>
     <li><a href="#visitanos" data-go="visitanos" data-i18n="mVisit">Visítanos y formas de pago</a></li>
     <li><a href="#" id="mWa" target="_blank" rel="noopener" data-i18n="mContact">Contáctanos por WhatsApp</a></li>
   </ul>
@@ -897,10 +912,10 @@ const fmt = n => "$" + Math.round(n).toLocaleString("es-CO");
 const cart = new Map(); const sel = {}; let cat = "Todo", query = ""; const OPT = {};
 Object.assign(T.es,{catsH:'Compra por categoría',catsP:'Elige qué quieres llevarte de Medellín.',catGo:n=>n===1?'1 producto':n+' productos',
  tr1H:'Hecho en Colombia',tr1P:'Productos colombianos elegidos a mano',tr2H:'Pago seguro',tr2P:'Con Bold: tarjeta, PSE y Nequi',tr3H:'Envíos',tr3P:'Domicilio en Medellín, nacional e internacional',tr4H:'Atención por WhatsApp',tr4P:'Te ayudamos con tu pedido',
- fStores:'Nuestras tiendas',fShop:'Compra',fHelp:'Ayuda',fWa:'Pedidos por WhatsApp',fBiz:'Kits y regalos corporativos',fBulk:'Ventas al por mayor',fPay:'Formas de pago y entregas',moreNote:'¿Buscas otro diseño? Tenemos muchos más en tienda, pídelos por WhatsApp'});
+ fStores:'Nuestras tiendas',fShop:'Compra',fHelp:'Ayuda',fWa:'Pedidos por WhatsApp',fBiz:'Kits y regalos corporativos',fBulk:'Ventas al por mayor',fPay:'Formas de pago y entregas',homeChip:'← Inicio',backHome:'Volver al inicio',moreNote:'¿Buscas otro diseño? Tenemos muchos más en tienda, pídelos por WhatsApp'});
 Object.assign(T.en,{catsH:'Shop by category',catsP:'Pick what you want to take home from Medellín.',catGo:n=>n===1?'1 item':n+' items',
  tr1H:'Made in Colombia',tr1P:'Colombian products, hand-picked',tr2H:'Secure payment',tr2P:'With Bold: cards, PSE and Nequi',tr3H:'Shipping',tr3P:'Delivery in Medellín, Colombia and worldwide',tr4H:'WhatsApp support',tr4P:'We help you with your order',
- fStores:'Our stores',fShop:'Shop',fHelp:'Help',fWa:'Order on WhatsApp',fBiz:'Corporate gifts & kits',fBulk:'Wholesale',fPay:'Payment & delivery',moreNote:'Looking for another design? We have many more in store, ask us on WhatsApp'});
+ fStores:'Our stores',fShop:'Shop',fHelp:'Help',fWa:'Order on WhatsApp',fBiz:'Corporate gifts & kits',fBulk:'Wholesale',fPay:'Payment & delivery',homeChip:'← Home',backHome:'Back to home',moreNote:'Looking for another design? We have many more in store, ask us on WhatsApp'});
 function slug(n){return String(n).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}
 function renderCats(){if(!DATA.products.length)return;
   const cs=DATA.categories.map(c=>{const it=DATA.products.filter(p=>p.cat===c.name&&avail(p).length).sort((a,b)=>a.rank-b.rank);return{c,it,ph:(it.find(p=>p.photos.length)||{photos:[]}).photos[0]}}).filter(x=>x.it.length);
@@ -909,9 +924,18 @@ function renderCats(){if(!DATA.products.length)return;
   document.getElementById("catnav").innerHTML=cs.map(x=>a(x)+esc(cn(x.c))+"</a>").join("");
   document.getElementById("fCats").innerHTML=cs.map(x=>"<li>"+a(x)+esc(cn(x.c))+"</a></li>").join("");
   document.getElementById("fWa").href=waLink(t("waHi"));}
-document.addEventListener("click",e=>{const a=e.target.closest("[data-jump]");if(!a)return;e.preventDefault();
-  if(cat!=="Todo"||query){cat="Todo";query="";const qi=document.getElementById("q");if(qi)qi.value="";renderChips();renderList()}
-  const el=document.getElementById("cat-"+slug(a.dataset.jump));if(el)el.scrollIntoView({behavior:smooth(),block:"start"})});
+function go(c){const h=c&&c!=="Todo"?"#c="+slug(c):"";if((location.hash||"")!==h)history.pushState(null,"",h||location.pathname+location.search);applyRoute(true)}
+function applyRoute(sc){const m=(location.hash||"").match(/^#c=([a-z0-9-]+)/);const c=m&&DATA.categories.find(x=>slug(x.name)===m[1]);cat=c?c.name:"Todo";query="";const qi=document.getElementById("q");if(qi)qi.value="";renderChips();renderList();if(sc)scrollTo(0,0)}
+window.addEventListener("popstate",()=>{if(DATA.products.length)applyRoute(true)});
+function syncNav(){document.querySelectorAll("#catnav a").forEach(a=>{if(a.dataset.jump===cat)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")})}
+function pvHeadHTML(g){const say=(T[LANG].catSay||{})[g.cat.name]||"";return `<header class="pv-head"><button type="button" class="pv-back" data-home>← ${t("backHome")}</button><h1>${esc(g.title)}</h1>${say?`<p>“${esc(say)}”</p>`:""}<span class="n">${g.items.length===1?t("items1"):t("itemsN")(g.items.length)}</span></header>`}
+const HOME_ONLY=".bhero,.hero,#categorias,.dicc,.shop,.info";
+document.addEventListener("click",e=>{
+  if(e.target.closest("[data-home]")){e.preventDefault();go("Todo");return}
+  const a=e.target.closest("[data-jump]");if(a){e.preventDefault();go(a.dataset.jump);return}
+  const l=e.target.closest('a[href^="#"]');if(!l||!document.body.classList.contains("pv"))return;
+  const id=l.getAttribute("href").slice(1);const el=id&&document.getElementById(id);if(!el||!el.closest(HOME_ONLY))return;
+  e.preventDefault();go("Todo");el.scrollIntoView({block:"start"})});
 function norm(s){return s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()}
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
 function avail(p){return p.options.filter(o=>o.q>0)}
@@ -936,18 +960,19 @@ function closeMenu(){menu.hidden=true;mscrim.hidden=true;menuBtn.setAttribute("a
 menuBtn.onclick=openMenu;document.getElementById("menuClose").onclick=closeMenu;mscrim.onclick=closeMenu;
 document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!menu.hidden)closeMenu()});
 document.getElementById("mShop").onclick=()=>{const sub=document.getElementById("mCats"),b=document.getElementById("mShop");sub.hidden=!sub.hidden;b.setAttribute("aria-expanded",String(!sub.hidden));b.querySelector("i").textContent=sub.hidden?"+":"−"};
-function renderMenuCats(){const cats=[{name:"Todo"},...DATA.categories.filter(c=>DATA.products.some(p=>p.cat===c.name&&avail(p).length))];
+function renderMenuCats(){const cats=[...DATA.categories.filter(c=>DATA.products.some(p=>p.cat===c.name&&avail(p).length))];
   document.getElementById("mCats").innerHTML=cats.map(c=>`<li><a href="#" data-cat="${esc(c.name)}">${esc(c.name==="Todo"?t("mAll"):cn(c))}</a></li>`).join("");
   document.getElementById("mWa").href=waLink(t("waHi"))}
 function smooth(){return matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}
 menu.addEventListener("click",e=>{const a=e.target.closest("a");if(!a)return;
-  if(a.dataset.cat){e.preventDefault();cat=a.dataset.cat;query="";document.getElementById("q").value="";renderChips();renderList();closeMenu();document.getElementById("list").scrollIntoView({behavior:smooth(),block:"start"});return}
-  if(a.dataset.go){e.preventDefault();closeMenu();if(a.dataset.go==="top"){scrollTo({top:0,behavior:smooth()});return}
+  if(a.dataset.cat){e.preventDefault();closeMenu();go(a.dataset.cat);return}
+  if(a.dataset.go){e.preventDefault();closeMenu();if(a.dataset.go==="top"){if(cat!=="Todo"||query)go("Todo");scrollTo({top:0,behavior:smooth()});return}
+    if(cat!=="Todo"||query)go("Todo");
     const el=document.getElementById(a.dataset.go);if(el)el.scrollIntoView({behavior:smooth(),block:"start"})}
   else if(a.id==="mWa"){closeMenu()}});
 let annI=0;function showAnn(){const a=T[LANG].ann,el=document.getElementById("annTxt");el.classList.remove("in");void el.offsetWidth;el.textContent=a[annI%a.length];el.classList.add("in")}
 showAnn();setInterval(()=>{annI++;showAnn()},4500);
-document.getElementById("tbLogo").onclick=e=>{e.preventDefault();scrollTo({top:0,behavior:smooth()})};
+document.getElementById("tbLogo").onclick=e=>{e.preventDefault();if(cat!=="Todo"||query)go("Todo");scrollTo({top:0,behavior:smooth()})};
 document.getElementById("tbSearch").onclick=()=>{const sb=document.getElementById("searchBar"),q=document.getElementById("q");if(!sb.hidden&&!q.value){sb.hidden=true;return}sb.hidden=false;q.focus()};
 document.getElementById("tbBag").onclick=()=>{if(cart.size)openSheet();else document.getElementById("list").scrollIntoView({behavior:smooth(),block:"start"})};
 let promoTimer=null;
@@ -959,11 +984,11 @@ function renderPromos(){const rail=document.getElementById("promoRail");if(!rail
   rail.onscroll=()=>{const i=Math.round(rail.scrollLeft/rail.clientWidth);[...dots.children].forEach((d,j)=>d.classList.toggle("on",j===i))};
   clearInterval(promoTimer);
   const bk=DATA.products.find(x=>x.pack&&avail(x).length),bb=document.getElementById("bulkBan");if(bb){bb.hidden=!bk;if(bk){const o=selected(bk),u=Math.round(o.price/bk.pack.n);document.getElementById("bkP").textContent=t("bkP")(pn(bk),fmt(u),fmt(bk.pack.sug),fmt((bk.pack.sug-u)*bk.pack.n));bb.onclick=()=>goTo({cat:bk.cat})}}
-  rail.onclick=e=>{const b=e.target.closest("[data-pgo]");if(!b)return;cat="Todo";query="";document.getElementById("q").value="";renderChips();renderList();const el=document.querySelector(`.grid [data-card="${b.dataset.pgo}"]`);if(el){el.scrollIntoView({behavior:smooth(),block:"center"});el.classList.add("in","flash");setTimeout(()=>el.classList.remove("flash"),2200)}}}
+  rail.onclick=e=>{const b=e.target.closest("[data-pgo]");if(!b)return;{const pp=DATA.products.find(x=>x.key===b.dataset.pgo);go(pp?pp.cat:"Todo")}const el=document.querySelector(`.grid [data-card="${b.dataset.pgo}"]`);if(el){el.scrollIntoView({behavior:smooth(),block:"center"});el.classList.add("in","flash");setTimeout(()=>el.classList.remove("flash"),2200)}}}
 function renderChips(){
   const el=document.getElementById("chips"); el.innerHTML="";
   const cats=[{name:"Todo"},...DATA.categories.filter(c=>DATA.products.some(p=>p.cat===c.name&&avail(p).length))];
-  cats.forEach(c=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=c.name==="Todo"?t("all"):cn(c);b.setAttribute("aria-pressed",String(c.name===cat));b.onclick=()=>{cat=c.name;renderChips();renderList()};el.appendChild(b)});
+  cats.forEach(c=>{const b=document.createElement("button");b.type="button";b.className="chip";b.textContent=c.name==="Todo"?t("homeChip"):cn(c);b.setAttribute("aria-pressed",String(c.name===cat));b.onclick=()=>go(c.name);el.appendChild(b)});
 }
 function selected(p){const a=avail(p);let id=sel[p.key];if(!a.find(o=>o.id===id)){id=a[0].id;sel[p.key]=id}return OPT[id].o}
 const isDes=p=>p.photos.length>1&&!p.options.some(o=>typeof o.ph==="number");
@@ -1024,9 +1049,9 @@ function goTo(g){
   query="";const qi=document.getElementById("q");if(qi)qi.value="";
   const ok=k=>DATA.products.some(p=>p.key===k&&avail(p).length);
   if(g.key&&!ok(g.key)){const p=DATA.products.find(p=>p.key===g.key);g=p?{cat:p.cat}:{top:1}}
-  cat=g.cat&&DATA.products.some(p=>p.cat===g.cat&&avail(p).length)?g.cat:"Todo"; renderChips(); renderList();
-  let el=g.key?document.querySelector(`.grid [data-card="${g.key}"]`):(g.top?document.querySelector(".showcase"):document.getElementById("list"));
-  el=el||document.getElementById("list");
+  if(g.key&&!g.cat){const p=DATA.products.find(p=>p.key===g.key);if(p)g.cat=p.cat} go(g.cat&&DATA.products.some(p=>p.cat===g.cat&&avail(p).length)?g.cat:"Todo");
+  let el=g.key?document.querySelector(`.grid [data-card="${g.key}"]`):(g.top?document.getElementById("categorias"):document.getElementById("list"));
+  el=el||document.getElementById(cat==="Todo"?"categorias":"list");
   el.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:g.key?"center":"start"});
   if(g.key){el.classList.add("in","flash");setTimeout(()=>el.classList.remove("flash"),2200)}
 }
@@ -1066,14 +1091,15 @@ function catHeadHTML(g){
   return `<header class="cat-head" id="cat-${slug(g.cat.name)}" style="--cc:${g.cat.color}"><div><h2>${esc(g.title)}</h2>${say?`<p><q>${esc(say)}</q></p>`:""}<span class="n">${g.items.length===1?t("items1"):t("itemsN")(g.items.length)}</span></div><img src="${ICONS[g.cat.icon]||ICONS.gift}" alt=""></header>`;
 }
 function renderList(){
-  const q=norm(query.trim());
+  const q=norm(query.trim());document.body.classList.toggle("pv",cat!=="Todo"||!!q);syncNav();
+  if(cat==="Todo"&&!q){document.getElementById("list").innerHTML="";return}
   const items=DATA.products.filter(p=>avail(p).length&&(cat==="Todo"||p.cat===cat)&&(!q||norm(p.name+" "+(p.en||"")+" "+p.cat+" "+(catOf(p.cat).en||"")).includes(q)));
-  const cEl=document.getElementById("count");cEl.textContent=items.length===1?t("count1"):t("countN")(items.length);cEl.classList.toggle("hide",cat==="Todo"&&!q);
+  const cEl=document.getElementById("count");cEl.textContent=items.length===1?t("count1"):t("countN")(items.length);cEl.classList.toggle("hide",!q);
   const list=document.getElementById("list");
   if(!items.length){list.innerHTML=`<p class="empty">${t("empty")}</p>`;return}
   const groups=DATA.categories.map(c=>({cat:c,title:cn(c),items:items.filter(p=>p.cat===c.name).sort((a,b)=>a.rank-b.rank)})).filter(g=>g.items.length);
   let top=[]; if(false&&cat==="Todo"&&!q&&DATA.top){top=DATA.top.map(k=>DATA.products.find(p=>p.key===k)).filter(p=>p&&avail(p).length)}
-  list.innerHTML=(top.length?showcaseHTML(top):"")+(groups.map(g=>catHeadHTML(g)+`<div class="grid">${g.items.map(cardHTML).join("")}</div>`+(g.items.some(hasMore)?`<p class="more-note"><a href="${waLink(t("moreNote"))}" target="_blank" rel="noopener">${t("moreNote")} →</a></p>`:"")).join(""));
+  list.innerHTML=(top.length?showcaseHTML(top):"")+(groups.map(g=>(cat!=="Todo"&&!q?pvHeadHTML(g):catHeadHTML(g))+`<div class="grid">${g.items.map(cardHTML).join("")}</div>`+(g.items.some(hasMore)?`<p class="more-note"><a href="${waLink(t("moreNote"))}" target="_blank" rel="noopener">${t("moreNote")} →</a></p>`:"")).join(""));
   const rail=document.getElementById("rail"); if(rail) list.querySelectorAll("[data-rail]").forEach(b=>b.onclick=()=>rail.scrollBy({left:Number(b.dataset.rail)*rail.clientWidth*.8,behavior:"smooth"}));
   reveal(list);
   list.querySelectorAll(".gal").forEach(gal=>gal.addEventListener("scroll",()=>{const i=Math.round(gal.scrollLeft/gal.clientWidth);const d=gal.parentElement.querySelector(".dots");if(d)[...d.children].forEach((e,j)=>e.classList.toggle("on",j===i));
@@ -1215,13 +1241,13 @@ scrim.onclick=closeSheet;
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeSheet();closeViewer()}});
 document.getElementById("copy").onclick=async()=>{const toast=document.getElementById("toast");
   try{await navigator.clipboard.writeText(orderText());toast.textContent=t("copied")}catch(_){toast.textContent=t("copyErr")}};
-document.getElementById("q").addEventListener("input",e=>{query=e.target.value;renderList()});
+document.getElementById("q").addEventListener("input",e=>{const was=document.body.classList.contains("pv");query=e.target.value;renderList();if(!was&&query)scrollTo(0,0)});
 function fmtDate(s){try{return new Date(s+"T12:00:00").toLocaleDateString(t("date"),{day:"numeric",month:"short"})}catch(_){return s}}
 applyStatic();renderPaisa();
 fetch("catalogo.json",{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{
   DATA=d; CONFIG={whatsapp:d.whatsapp,updated:d.updated};
   d.products.forEach(p=>p.options.forEach(o=>OPT[o.id]={p,o}));
-  applyStatic(); renderChips(); renderList(); renderCats(); renderOrder(); checkHash(); renderPromos(); window.dispatchEvent(new Event("tam-ready"));
+  applyStatic(); renderChips(); renderList(); renderCats(); if(/^#c=/.test(location.hash))applyRoute(false); renderOrder(); checkHash(); renderPromos(); window.dispatchEvent(new Event("tam-ready"));
   try{const ks=(d.top||[]).concat(d.products.map(p=>p.key));const seen=new Set();const ph=[];for(const k of ks){const p=d.products.find(x=>x.key===k);if(!p||seen.has(k)||!p.photos.length||!avail(p).length)continue;seen.add(k);ph.push(p.photos[0]);if(ph.length>=10)break}
     const h=ph.map(u=>`<img src="${u}" alt="" loading="eager">`).join("");const st=document.getElementById("strip");if(st)st.innerHTML=h+h}catch(_){}
 }).catch(()=>{document.getElementById("list").innerHTML=`<p class="empty">${t("loadErr")}</p>`});
