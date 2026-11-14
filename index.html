@@ -645,6 +645,15 @@ section.trust{border:0 !important;background:transparent !important}
 .chip{border-width:1px !important}
 .bulk{flex-wrap:wrap !important;align-items:flex-start !important}.bk-ic{display:none}.bk-t{flex:1 1 300px !important}.bk-go{align-self:center}
 @media (max-width:600px){.bk-go{flex-basis:100%}}
+
+/* Inicio: título en 2 renglones en computador */
+@media (min-width:900px){
+  .bh-in>.bh-h{max-width:860px;font-size:clamp(44px,4.3vw,62px);line-height:.95}
+  .bhero{min-height:clamp(420px,58vh,560px)}
+  .bh-in{max-width:none;padding:40px max(32px,calc((100% - 1088px)/2)) 36px;gap:12px}
+}
+@media (max-width:899px){.bh-br{display:none}}
+.ps-big{white-space:nowrap}@media (min-width:1000px){.ps-big{font-size:clamp(17px,1.65vw,22px) !important}}
 </style>
 
 <div class="announce" aria-live="polite"><span id="annTxt">Domicilios en Medellín · Envíos nacionales e internacionales</span></div>
@@ -663,7 +672,7 @@ section.trust{border:0 !important;background:transparent !important}
   <img class="bh-img" src="tienda/hero.jpg" alt="Interior de la tienda Te Amo Medellín con camisetas, sombreros y artesanías" fetchpriority="high">
   <div class="bh-in">
     <span class="bh-ey" data-i18n="bhEy">Souvenirs de Medellín · El Poblado</span>
-    <h1 class="bh-h" id="bhH" data-i18n-html="bhH">Un pedacito de <em>Medellín</em> pa’ llevar</h1>
+    <h1 class="bh-h" id="bhH" data-i18n-html="bhH">Un pedacito de<br class="bh-br"> <em>Medellín</em> pa’ llevar</h1>
     <p class="bh-p" data-i18n="bhP">Café, artesanías, camisetas y detalles paisas, elegidos con amor en nuestras dos tiendas.</p>
     <div class="bh-cta"><a class="bh-btn" href="#categorias" data-i18n="bhShop">Ver tienda</a><a class="bh-btn ghost" href="#empresas" data-i18n="bhBiz">Regalos corporativos</a></div>
     <ul class="bh-trust"><li data-i18n="bhT1">🛵 Domicilio a tu hotel</li><li data-i18n="bhT2">📦 Envíos a toda Colombia</li><li data-i18n="bhT3">🏬 2 tiendas en El Poblado</li></ul>
@@ -897,7 +906,7 @@ const T={es:{
  each:'c/u',follow:'Síguenos y <em>enamórate</em> de Medellín',
  foot:'Te Amo Medellín · Souvenirs. Los precios incluyen impuestos. Las cantidades se actualizan cada día desde nuestro inventario, así que te confirmamos todo al recibir tu pedido.',
  mHome:'Inicio',mShop:'Tienda',mBiz:'Regalos corporativos',mStore:'Nuestra tienda',mPaisa:'Diccionario paisa',mVisit:'Visítanos y formas de pago',mContact:'Contáctanos por WhatsApp',mAll:'Ver todo',
- ann:['✈️ ¿Te vas pronto? Te lo llevamos a tu hotel','💼 ¿Emprendes? Arequipe La Villa por paquete x30 a precio por mayor','🚚 Domicilios en Medellín y envíos internacionales','🎁 Kits corporativos: cotiza por WhatsApp','📍 Tiendas en Calle 10 y Manila, El Poblado'],promoEy:'Promo',packU:u=>`Sale a ${u} c/u`,packG:(s,g)=>`Véndelo a ${s} y ganas ${g} por paquete`,upTxt:u=>`💼 ¿Vas a revender? Por paquete x30 sale a ${u} c/u`,bkH:'¿Emprendes? Compra por paquete y gana',bkP:(n,u,s,g)=>`${n}: sale a ${u} c/u. Si lo vendes a ${s}, te ganas ${g} por paquete.`,bkGo:'Ver precios por mayor →',mBulk:'💼 Para emprender · por mayor',bhEy:'Souvenirs de Medellín · El Poblado',bhH:'Un pedacito de <em>Medellín</em> pa’ llevar',bhP:'Café, artesanías, camisetas y detalles paisas, elegidos con amor en nuestras dos tiendas.',bhShop:'Ver tienda',bhBiz:'Regalos corporativos',bhT1:'🛵 Domicilio a tu hotel',bhT2:'📦 Envíos a toda Colombia',bhT3:'🏬 2 tiendas en El Poblado',promoH:'Promos de la semana',buy:'¡Compra aquí!',
+ ann:['✈️ ¿Te vas pronto? Te lo llevamos a tu hotel','💼 ¿Emprendes? Arequipe La Villa por paquete x30 a precio por mayor','🚚 Domicilios en Medellín y envíos internacionales','🎁 Kits corporativos: cotiza por WhatsApp','📍 Tiendas en Calle 10 y Manila, El Poblado'],promoEy:'Promo',packU:u=>`Sale a ${u} c/u`,packG:(s,g)=>`Véndelo a ${s} y ganas ${g} por paquete`,upTxt:u=>`💼 ¿Vas a revender? Por paquete x30 sale a ${u} c/u`,bkH:'¿Emprendes? Compra por paquete y gana',bkP:(n,u,s,g)=>`${n}: sale a ${u} c/u. Si lo vendes a ${s}, te ganas ${g} por paquete.`,bkGo:'Ver precios por mayor →',mBulk:'💼 Para emprender · por mayor',bhEy:'Souvenirs de Medellín · El Poblado',bhH:'Un pedacito de<br class="bh-br"> <em>Medellín</em> pa’ llevar',bhP:'Café, artesanías, camisetas y detalles paisas, elegidos con amor en nuestras dos tiendas.',bhShop:'Ver tienda',bhBiz:'Regalos corporativos',bhT1:'🛵 Domicilio a tu hotel',bhT2:'📦 Envíos a toda Colombia',bhT3:'🏬 2 tiendas en El Poblado',promoH:'Promos de la semana',buy:'¡Compra aquí!',
  shopH:'Ven a <em>conocernos</em>',shopP:'Dos tiendas en El Poblado llenas de Medellín: souvenirs, artesanías, café y dulces típicos.',
  bizEy:'Empresas y al por mayor',bizH:'Kits empresariales y regalos corporativos',bizP:'Armamos kits con productos típicos de Medellín para clientes, colaboradores y eventos, y vendemos al por mayor productos seleccionados.',bizBtn:'Cotizar por WhatsApp',
  visitH:'Visítanos',how:'Cómo llegar →',payH:'Formas de pago',pay1:'Tarjeta débito y crédito en tienda',pay2:'Efectivo en tienda',pay3:'Transferencia, código QR y link de pago',
@@ -926,7 +935,7 @@ en:{
  each:'each',follow:'Follow us and <em>fall in love</em> with Medellín',
  foot:'Te Amo Medellín · Souvenirs. Prices in Colombian pesos (COP), taxes included. Stock is updated daily from our inventory, and we confirm everything when we receive your order.',
  mHome:'Home',mShop:'Shop',mBiz:'Corporate gifts',mStore:'Our store',mPaisa:'Paisa dictionary',mVisit:'Visit us & payments',mContact:'Contact us on WhatsApp',mAll:'See all',
- ann:['✈️ Leaving soon? We deliver to your hotel','💼 Reselling? Arequipe La Villa in packs of 30 at wholesale price','🚚 Delivery in Medellín & international shipping','🎁 Corporate gifts & kits · Quote on WhatsApp','📍 Two stores in El Poblado: Calle 10 & Manila'],promoEy:'Deal',packU:u=>`Only ${u} each`,packG:(s,g)=>`Resell at ${s} and earn ${g} per pack`,upTxt:u=>`💼 Reselling? Pack of 30 at ${u} each`,bkH:'Starting a business? Buy by the pack',bkP:(n,u,s,g)=>`${n}: ${u} each. Resell at ${s} and earn ${g} per pack.`,bkGo:'See wholesale prices →',mBulk:'💼 Wholesale · for resellers',bhEy:'Medellín souvenirs · El Poblado',bhH:'A little piece of <em>Medellín</em> to take home',bhP:'Coffee, handicrafts, T-shirts and paisa gifts, picked with love in our two stores.',bhShop:'Shop now',bhBiz:'Corporate gifts',bhT1:'🛵 Delivery to your hotel',bhT2:'📦 Shipping across Colombia',bhT3:'🏬 2 stores in El Poblado',promoH:'This week’s deals',buy:'Shop now!',
+ ann:['✈️ Leaving soon? We deliver to your hotel','💼 Reselling? Arequipe La Villa in packs of 30 at wholesale price','🚚 Delivery in Medellín & international shipping','🎁 Corporate gifts & kits · Quote on WhatsApp','📍 Two stores in El Poblado: Calle 10 & Manila'],promoEy:'Deal',packU:u=>`Only ${u} each`,packG:(s,g)=>`Resell at ${s} and earn ${g} per pack`,upTxt:u=>`💼 Reselling? Pack of 30 at ${u} each`,bkH:'Starting a business? Buy by the pack',bkP:(n,u,s,g)=>`${n}: ${u} each. Resell at ${s} and earn ${g} per pack.`,bkGo:'See wholesale prices →',mBulk:'💼 Wholesale · for resellers',bhEy:'Medellín souvenirs · El Poblado',bhH:'A little piece of<br class="bh-br"> <em>Medellín</em> to take home',bhP:'Coffee, handicrafts, T-shirts and paisa gifts, picked with love in our two stores.',bhShop:'Shop now',bhBiz:'Corporate gifts',bhT1:'🛵 Delivery to your hotel',bhT2:'📦 Shipping across Colombia',bhT3:'🏬 2 stores in El Poblado',promoH:'This week’s deals',buy:'Shop now!',
  shopH:'Come <em>visit us</em>',shopP:'Two stores in El Poblado full of Medellín: souvenirs, crafts, coffee and local sweets.',
  bizEy:'Companies & wholesale',bizH:'Corporate kits and business gifts',bizP:'We build kits with typical Medellín products for clients, teams and events, and sell selected products wholesale.',bizBtn:'Get a quote on WhatsApp',
  visitH:'Visit us',how:'Directions →',payH:'Payment methods',pay1:'Debit and credit cards in store',pay2:'Cash in store',pay3:'Bank transfer, QR code and payment link',
