@@ -614,6 +614,37 @@ main .wrap{padding-top:18px}
 
 /* herramienta del equipo: solo con el enlace #equipo */
 #staffBtn{display:none!important}
+
+/* ===== Diseño limpio: menos recuadros ===== */
+.pslide{border:0 !important;box-shadow:none !important;background:transparent !important;padding:0 !important;border-radius:0 !important}
+.pslide::before{display:none !important}
+.pslide img{border-radius:14px !important}
+.ps-btn{background:transparent !important;color:var(--ink) !important;padding:0 !important;text-decoration:underline;text-underline-offset:3px;font-weight:800}
+.ps-btn:hover{background:transparent !important;color:var(--red) !important}
+.bulk{background:transparent !important;color:var(--ink) !important;padding:22px 0 !important;border-radius:0 !important;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:22px 0 0 !important}
+.bk-ic{font-size:26px}
+.bk-t small{color:#555 !important}
+.bk-go{background:transparent !important;color:var(--red) !important;padding:0 !important;border-radius:0 !important;text-decoration:underline;text-underline-offset:3px;text-align:left !important;width:auto !important}
+.bulk:hover .bk-go{background:transparent !important;color:var(--ink) !important}
+.ctile{border:0 !important;background:transparent !important;box-shadow:none !important;border-radius:0 !important;overflow:visible !important}
+.ctile img,.ctile .ct-img,.ctile picture{border-radius:16px}
+.ctile > *:first-child{border-radius:16px;overflow:hidden}
+.ctile > *:not(:first-child){padding-left:2px !important;padding-right:0 !important}
+.shop-grid figure{border:0 !important;box-shadow:none !important;border-radius:14px !important;overflow:hidden}
+section.trust{border:0 !important;background:transparent !important}
+.tr-ic{background:transparent !important}
+.biz{border-radius:0 !important;margin-left:calc(50% - 50vw) !important;margin-right:calc(50% - 50vw) !important;padding-left:max(20px,calc(50vw - 540px)) !important;padding-right:max(20px,calc(50vw - 540px)) !important}
+.icard{border:0 !important;background:transparent !important;padding:0 !important;border-radius:0 !important;box-shadow:none !important}
+.icard .store{border-color:var(--line) !important}
+.social-links a{background:transparent !important;padding:4px 0 !important;border:0 !important;color:var(--white) !important}
+.social-links a span,.social-links a b{color:inherit !important}.social-links a b{color:#bdb9ad !important}
+.bulk{width:100% !important}
+.card{border:0 !important;box-shadow:none !important;background:transparent !important;border-radius:0 !important;overflow:visible !important}
+.card .ph{border-radius:16px;overflow:hidden}
+.card .body{padding-left:2px !important;padding-right:2px !important}
+.chip{border-width:1px !important}
+.bulk{flex-wrap:wrap !important;align-items:flex-start !important}.bk-ic{display:none}.bk-t{flex:1 1 300px !important}.bk-go{align-self:center}
+@media (max-width:600px){.bk-go{flex-basis:100%}}
 </style>
 
 <div class="announce" aria-live="polite"><span id="annTxt">Domicilios en Medellín · Envíos nacionales e internacionales</span></div>
